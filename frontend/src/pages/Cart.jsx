@@ -53,7 +53,7 @@ export default function Cart() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12 md:py-16 flex-grow w-full">
+    <div className="w-full px-6 md:px-12 lg:px-16 py-12 md:py-16 flex-grow">
       <h2 className="text-4xl font-extrabold text-gray-900 mb-10 flex items-center gap-3">
         Sua Sacola <span>🛍️</span>
       </h2>
@@ -107,7 +107,7 @@ export default function Cart() {
               </div>
 
               {showAuthWarning && (
-                <div className="bg-amber-100 text-amber-800 p-5 rounded-2xl border border-amber-200 mb-6 animate-pulse">
+                <div className="bg-amber-100 text-amber-800 p-5 rounded-2xl border border-amber-200 mb-6">
                   <strong className="block text-base mb-1">⚠️ Quase lá!</strong>
                   <p className="text-sm mb-4">Identificamos que seu destino não está preenchido no sistema.</p>
                   <Link to="/login" className="block text-center bg-amber-500 text-white font-bold py-3 rounded-xl hover:bg-amber-600 transition shadow-sm text-base">

@@ -32,7 +32,7 @@ export default function Orders() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12 md:py-24 w-full flex-grow">
+    <div className="w-full px-6 md:px-16 lg:px-48 xl:px-80 py-12 md:py-24 flex-grow">
       <div className="text-center mb-12">
         <h2 className="text-4xl font-extrabold text-gray-900 mb-4">Faça sua Encomenda</h2>
         <p className="text-gray-600 text-lg">
@@ -112,7 +112,7 @@ export default function Orders() {
           </div>
 
           {showAuthWarning && (
-            <div className="bg-amber-50 text-amber-800 p-5 rounded-xl border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 animate-pulse">
+            <div className="bg-amber-50 text-amber-800 p-5 rounded-xl border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
               <div>
                 <strong className="block mb-1 text-base">⚠️ Falta preencher seus dados!</strong>
                 <p className="text-sm">Por favor, preencha onde devemos entregar sua encomenda clicando ao lado.</p>

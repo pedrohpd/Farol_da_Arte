@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <>
       {/* Seção Hero */}
-      <section className="max-w-7xl mx-auto px-4 py-12 md:py-24 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <section className="w-full px-6 md:px-12 lg:px-16 py-12 md:py-24 grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 items-center">
         <div>
           <span className="text-indigo-500 font-semibold tracking-wider uppercase text-sm mb-4 block">Nova Coleção</span>
           <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-gray-900">Moda em miniatura para suas bonecas.</h2>
@@ -28,7 +28,7 @@ export default function Home() {
       </section>
       
       {/* Seção  Sobre */}
-      <section className="max-w-7xl mx-auto px-4 py-12 md:py-24 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <section className="w-full px-6 md:px-12 lg:px-16 py-12 md:py-24 grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 items-center">
         <div className="aspect-[4/5] md:aspect-square bg-gray-100 rounded-3xl overflow-hidden shadow-2xl relative">
           <img 
             src="/images/hero.png" 
@@ -44,7 +44,7 @@ export default function Home() {
 
       {/* Seção de Destaques */}
       <section className="bg-gray-50 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-4 relative">
+        <div className="w-full px-6 md:px-12 lg:px-16 relative">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-gray-900 mb-4">Destaques da Loja</h3>
             <p className="text-gray-500 max-w-2xl mx-auto">As roupinhas mais queridas e procuradas no momento.</p>

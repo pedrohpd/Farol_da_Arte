@@ -38,7 +38,7 @@ export default function Profile() {
     : user.address;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 md:py-16 flex-grow w-full">
+    <div className="w-full px-6 md:px-12 lg:px-24 xl:px-48 py-12 md:py-16 flex-grow">
       <div className="mb-10 text-center md:text-left">
         <h2 className="text-4xl font-extrabold text-gray-900 mb-2">
           Olá, {getFirstName(user.name)}! 👋

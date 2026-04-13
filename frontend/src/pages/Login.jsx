@@ -73,7 +73,7 @@ export default function Login() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12 md:py-16 flex-grow w-full">
+    <div className="w-full px-6 md:px-16 lg:px-48 xl:px-[25%] py-12 md:py-16 flex-grow">
       <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
         
         <div className="p-8 md:p-10">

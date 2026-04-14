@@ -131,7 +131,6 @@ export default function Login() {
                 <h3 className="text-lg font-bold text-[#B15E4B] mb-4 uppercase tracking-wide">Endereço de Entrega</h3>
                 <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
                   
-                  {/* CEP */}
                   <div className="col-span-2 md:col-span-2">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">CEP</label>
                     <input 
@@ -144,7 +143,6 @@ export default function Login() {
                     />
                   </div>
 
-                  {/* ESTADO (UF) */}
                   <div className="col-span-2 md:col-span-1">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">UF</label>
                     <input 
@@ -157,7 +155,6 @@ export default function Login() {
                     />
                   </div>
 
-                  {/* CIDADE */}
                   <div className="col-span-4 md:col-span-3">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Cidade</label>
                     <input 
@@ -168,7 +165,6 @@ export default function Login() {
                     />
                   </div>
 
-                  {/* RUA */}
                   <div className="col-span-3 md:col-span-4">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Rua / Logradouro</label>
                     <input 
@@ -179,7 +175,6 @@ export default function Login() {
                     />
                   </div>
 
-                  {/* NÚMERO */}
                   <div className="col-span-1 md:col-span-2">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Nº</label>
                     <input 
@@ -190,7 +185,6 @@ export default function Login() {
                     />
                   </div>
 
-                  {/* BAIRRO */}
                   <div className="col-span-4">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Bairro</label>
                     <input 

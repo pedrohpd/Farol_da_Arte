@@ -10,14 +10,14 @@ export default function Catalog() {
     {
       id: 1,
       name: "Roupão Rosa Baby-Alive",
-      description: "Não sei o tipo de tecido",
+      description: "Descrição (tipo de tecido, medidas...)",
       price: "R$ 30,00",
       image: Roupao,
     },
     {
       id: 2,
-      name: "Suéter de Tricô Rosa",
-      description: "Tambem nao sei o tipo de tecido",
+      name: "Vestido Estrelado Barbie",
+      description: "Descrição (tipo de tecido, medidas...)",
       price: "R$ 40,00",
       image: Vestido,
     }

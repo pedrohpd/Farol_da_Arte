@@ -68,7 +68,7 @@ export default function Cart() {
             to="/catalogo"
             className="bg-[#4A7C96] text-white font-bold px-10 py-4 rounded-full hover:bg-[#B15E4B] transition-all shadow-lg uppercase text-sm tracking-widest"
           >
-            Explorar Coleção
+            Explorar Catálogo
           </Link>
         </div>
       ) : (
@@ -98,7 +98,7 @@ export default function Cart() {
               </div>
 
               {showAuthWarning && (
-                <div className="bg-[#B15E4B]/5 text-[#B15E4B] p-5 rounded-2xl border border-[#B15E4B]/20 mb-6 animate-pulse">
+                <div className="bg-[#B15E4B]/5 text-[#B15E4B] p-5 rounded-2xl border border-[#B15E4B]/20 mb-6">
                   <strong className="block text-xs uppercase tracking-widest mb-2">Atenção</strong>
                   <p className="text-xs mb-4">Para finalizar, precisamos saber para onde enviar suas peças.</p>
                   <Link to="/login" className="block text-center bg-[#B15E4B] text-white font-bold py-3 rounded-full hover:bg-[#4A7C96] transition shadow-md text-xs uppercase tracking-tighter">
@@ -112,6 +112,12 @@ export default function Cart() {
                 className="w-full bg-[#4A7C96] text-white font-bold text-sm uppercase tracking-[0.2em] py-5 rounded-full shadow-lg hover:bg-[#B15E4B] transition-all transform hover:-translate-y-1 active:translate-y-0"
               >
                 Finalizar Compra
+              </button>
+              <button 
+                onClick={clearCart}
+                className="w-full mt-4 bg-transparent text-[#B15E4B] border-2 border-[#B15E4B] font-bold text-sm uppercase tracking-[0.1em] py-4 rounded-full hover:bg-[#B15E4B] hover:text-white transition-all transform hover:-translate-y-1 active:translate-y-0"
+              >
+                Limpar Carrinho
               </button>
             </div>
           </div>

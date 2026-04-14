@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
 
 export default function Profile() {
   const { user, logout } = useAuth();
+  const { clearCart } = useCart();
   const navigate = useNavigate();
 
   if (!user) {
@@ -24,6 +26,7 @@ export default function Profile() {
 
   const handleLogout = () => {
     logout();
+    clearCart();
     navigate('/');
   };
 

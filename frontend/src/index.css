@@ -3,7 +3,7 @@
 :root {
   --text: #6b6375;
   --text-h: #08060d;
-  --bg: #fff;
+  --bg: #F7E9D0;
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
@@ -34,8 +34,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
+    --text: #423E37;
+    --text-h: #B15E4B;
     --bg: #16171d;
     --border: #2e303a;
     --code-bg: #1f2028;
@@ -91,6 +91,7 @@
   }
   p {
     margin: 0;
+    color: var(--text);
   }
 
   code,

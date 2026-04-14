@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -6,9 +6,12 @@ export default function Login() {
   const { user, saveProfile } = useAuth();
   const navigate = useNavigate();
 
+  const [isRegistering, setIsRegistering] = useState(false);
+
   // Estados dos campos
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [cep, setCep] = useState('');
   const [rua, setRua] = useState('');
   const [numero, setNumero] = useState('');
@@ -17,182 +20,150 @@ export default function Login() {
   const [estado, setEstado] = useState('');
   const [error, setError] = useState('');
 
-  // Se o usuário já tem um perfil salvo na máquina, preenchemos os campos como cortesia
-  useEffect(() => {
-    if (user) {
-      setName(user.name || '');
-      setEmail(user.email || '');
-      if (user.address) {
-        setCep(user.address.cep || '');
-        setRua(user.address.rua || '');
-        setNumero(user.address.numero || '');
-        setBairro(user.address.bairro || '');
-        setCidade(user.address.cidade || '');
-        setEstado(user.address.estado || '');
-      }
-    }
-  }, [user]);
-
-  const fetchCep = async (cepValue) => {
-    const cleanCep = cepValue.replace(/\D/g, '');
-    setCep(cleanCep);
-    if (cleanCep.length === 8) {
-      try {
-        const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
-        const data = await response.json();
-        if (!data.erro) {
-          setRua(data.logradouro || '');
-          setBairro(data.bairro || '');
-          setCidade(data.localidade || '');
-          setEstado(data.uf || '');
-        }
-      } catch (err) {
-        console.error("Erro ao buscar CEP", err);
-      }
-    }
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
 
-    if (!name || !email || !cep || !rua || !numero || !bairro || !cidade || !estado) {
-      setError('Por favor, preencha todos os campos do endereço.');
-      return;
+    if (isRegistering) {
+      if (!name || !email || !password || !cep || !rua || !numero || !cidade || !estado) {
+        setError('Por favor, preencha todos os campos para o cadastro.');
+        return;
+      }
+    } else {
+      if (!email || !password) {
+        setError('Email e senha são obrigatórios.');
+        return;
+      }
     }
     
-    // Salva globalmente como um App Frontend puro
     saveProfile({
-      name,
+      name: isRegistering ? name : (user?.name || 'Viajante do Farol'),
       email,
-      address: { cep, rua, numero, bairro, cidade, estado }
+      address: isRegistering ? { cep, rua, numero, bairro, cidade, estado } : user?.address
     });
 
-    // Redireciona logo após salvar. Se der sucesso, vai direto pro Perfil visualizar
     navigate('/perfil'); 
   };
 
   return (
-    <div className="w-full px-6 md:px-16 lg:px-48 xl:px-[25%] py-12 md:py-16 flex-grow">
-      <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+    <div className="w-full px-6 py-12 md:py-20 flex-grow bg-[#F7E9D0]/30 min-h-screen font-sans">
+      <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-xl border border-[#F7E9D0] overflow-hidden">
         
-        <div className="p-8 md:p-10">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-extrabold text-gray-900 mb-2">Seus Dados Mágicos</h2>
-            <p className="text-gray-500">
-              Configure seu perfil de envio aqui para não precisar redigitar sempre que fizer uma encomenda!
-            </p>
+        <div className="p-8 md:p-12">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-extrabold text-[#B15E4B] mb-2 uppercase tracking-tight">
+              {isRegistering ? 'Criar Nova Conta' : 'Bem-vindo ao Farol!'}
+            </h2>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm text-center">
+            <div className="mb-6 p-4 bg-red-50 text-[#B15E4B] rounded-xl text-sm text-center font-bold border border-red-100">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Nome Completo</label>
-                <input 
-                  type="text" 
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 focus:bg-white transition-colors"
-                  placeholder="Ex: Lídia Dias"
-                />
-              </div>
+            <div className="grid grid-cols-1 gap-5">
+              {isRegistering && (
+                <div>
+                  <label className="block text-xs font-bold text-[#4A7C96] uppercase mb-1 ml-1">Nome Completo</label>
+                  <input 
+                    type="text" 
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all bg-gray-50 focus:bg-white"
+                    placeholder="Ex: João Silva"
+                  />
+                </div>
+              )}
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">E-mail</label>
+                <label className="block text-xs font-bold text-[#4A7C96] uppercase mb-1 ml-1">email</label>
                 <input 
                   type="email" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 focus:bg-white transition-colors"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all bg-gray-50 focus:bg-white"
                   placeholder="seuemail@exemplo.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#4A7C96] uppercase mb-1 ml-1">Senha</label>
+                <input 
+                  type="password" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all bg-gray-50 focus:bg-white"
+                  placeholder="••••••••"
                 />
               </div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-gray-100">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Endereço de Entrega</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="col-span-1 border-r border-transparent md:border-transparent">
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">CEP</label>
-                  <input 
-                    type="text" 
-                    maxLength="8"
-                    value={cep}
-                    onChange={(e) => fetchCep(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-indigo-50 transition-colors"
-                    placeholder="Somente números"
-                  />
+            {isRegistering && (
+              <div className="mt-8 pt-6 border-t border-gray-100">
+                <h3 className="text-lg font-bold text-[#B15E4B] mb-4 uppercase tracking-wide">Endereço de Entrega</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="col-span-2">
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">CEP</label>
+                    <input 
+                      type="text" 
+                      value={cep}
+                      onChange={(e) => setCep(e.target.value)}
+                      placeholder="00000-000"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all"
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Cidade</label>
+                    <input 
+                      type="text" 
+                      value={cidade}
+                      onChange={(e) => setCidade(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all"
+                    />
+                  </div>
+                  <div className="col-span-3">
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Rua / Logradouro</label>
+                    <input 
+                      type="text" 
+                      value={rua}
+                      onChange={(e) => setRua(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all"
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Nº</label>
+                    <input 
+                      type="text" 
+                      value={numero}
+                      onChange={(e) => setNumero(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all"
+                    />
+                  </div>
                 </div>
-
-                <div className="col-span-1 md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Rua / Logradouro</label>
-                  <input 
-                    type="text" 
-                    value={rua}
-                    onChange={(e) => setRua(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 focus:bg-white transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Número</label>
-                  <input 
-                    type="text" 
-                    value={numero}
-                    onChange={(e) => setNumero(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 focus:bg-white transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Bairro</label>
-                  <input 
-                    type="text" 
-                    value={bairro}
-                    onChange={(e) => setBairro(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 focus:bg-white transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Cidade</label>
-                  <input 
-                    type="text" 
-                    value={cidade}
-                    onChange={(e) => setCidade(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 focus:bg-white transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Estado (UF)</label>
-                  <input 
-                    type="text" 
-                    maxLength="2"
-                    value={estado}
-                    onChange={(e) => setEstado(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 focus:bg-white transition-colors uppercase"
-                  />
-                </div>
-
               </div>
-            </div>
+            )}
 
             <button 
               type="submit" 
-              className="w-full bg-indigo-600 text-white font-bold text-lg mt-6 py-4 rounded-full shadow-lg hover:shadow-xl hover:bg-indigo-700 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+              className="w-full bg-[#B15E4B] text-white font-bold text-lg mt-6 py-4 rounded-full shadow-lg hover:bg-[#4A7C96] transition-all transform active:scale-95 shadow-[#B15E4B]/20"
             >
-              Salvar Perfil de Envio
+              {isRegistering ? 'Finalizar Cadastro' : 'Entrar'}
             </button>
           </form>
+
+          <div className="mt-8 text-center">
+            <button 
+              onClick={() => setIsRegistering(!isRegistering)}
+              className="text-[#4A7C96] font-bold text-sm hover:text-[#B15E4B] transition-colors uppercase tracking-widest"
+            >
+              {isRegistering 
+                ? '← Já tem conta? Faça login' 
+                : 'Ainda não tem conta? Cadastre-se aqui →'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

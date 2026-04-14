@@ -42,7 +42,7 @@ export default function Cart() {
             Tudo certo! As roupinhas incríveis serão enviadas para as mãos de <strong>{user?.name}</strong>.
           </p>
           <Link 
-            to="/Catalogo"
+            to="/catalogo"
             className="font-bold border-2 border-green-600 text-green-700 px-10 py-4 rounded-full hover:bg-green-600 hover:text-white transition-colors inline-block text-lg shadow-sm"
           >
             Voltar ao Catálogo
@@ -54,16 +54,16 @@ export default function Cart() {
 
   return (
     <div className="w-full px-6 md:px-12 lg:px-16 py-12 md:py-16 flex-grow">
-      <h2 className="text-4xl font-extrabold text-gray-900 mb-10 flex items-center gap-3">
-        Sua Sacola <span>🛍️</span>
+      <h2 className="text-4xl font-extrabold mb-10 flex items-center gap-3">
+        Seu Carrinho
       </h2>
 
       {cart.length === 0 ? (
         <div className="text-center py-20 bg-gray-50 rounded-3xl border border-gray-100">
-          <p className="text-gray-500 text-xl mb-6">Sua sacola está vazia...</p>
+          <p className="text-gray-500 text-xl mb-6">Seu carrinho está vazio...</p>
           <Link 
-            to="/Catalogo"
-            className="bg-indigo-600 text-white font-bold px-8 py-3 rounded-full hover:bg-indigo-700 transition shadow"
+            to="/catalogo"
+            className="bg-[#B15E4B] text-white font-bold px-8 py-3 rounded-full hover:bg-[#4A7C96] transition shadow"
           >
             Explorar Catálogo
           </Link>
@@ -118,7 +118,7 @@ export default function Cart() {
 
               <button 
                 onClick={handleCheckout}
-                className="w-full bg-indigo-600 text-white font-extrabold text-xl py-5 rounded-full shadow-lg hover:shadow-xl hover:bg-indigo-700 transition-all hover:-translate-y-1 active:translate-y-0"
+                className="w-full bg-[#B15E4B] text-white font-extrabold text-xl py-5 rounded-full shadow-lg hover:shadow-xl hover:bg-indigo-700 transition-all hover:-translate-y-1 active:translate-y-0"
               >
                 Finalizar Compra
               </button>

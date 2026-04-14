@@ -34,7 +34,7 @@ export default function Orders() {
   return (
     <div className="w-full px-6 md:px-16 lg:px-48 xl:px-80 py-12 md:py-24 flex-grow">
       <div className="text-center mb-12">
-        <h2 className="text-4xl font-extrabold text-gray-900 mb-4">Faça sua Encomenda</h2>
+        <h2 className="text-4xl font-extrabold mb-4">Faça sua Encomenda</h2>
         <p className="text-gray-600 text-lg">
           Sonhou com uma roupinha específica para sua boneca? Preencha os detalhes abaixo, anexe imagens de referência, e nós daremos vida a essa ideia!
         </p>
@@ -125,7 +125,7 @@ export default function Orders() {
 
           <button 
             type="submit" 
-            className="w-full bg-indigo-600 text-white font-bold text-lg py-4 rounded-full shadow-lg hover:shadow-xl hover:bg-indigo-700 transition-all transform hover:-translate-y-0.5 active:translate-y-0 mt-2"
+            className="w-full bg-[#B15E4B] text-white font-bold px-8 py-3 rounded-full hover:bg-[#4A7C96] transition shadow transform hover:-translate-y-0.5 active:translate-y-0 mt-2"
           >
             Enviar Solicitação
           </button>

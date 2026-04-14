@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
+import Logo from '../assets/logo.png';
 
 export default function Header() {
   const { user } = useAuth();
@@ -18,21 +19,32 @@ export default function Header() {
   const totalCartItems = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <header className="bg-white border-b border-gray-100 sticky top-0 z-50" id="inicio">
-      <div className="w-full mx-auto px-6 md:px-12 lg:px-16 h-16 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-indigo-500 tracking-tighter">Farol da Arte</h1>
-        <nav className="hidden md:flex gap-8 text-sm font-medium text-gray-600">
-          <Link to="/" className="hover:text-indigo-500">Início</Link>
-          <Link to="/Catalogo" className="hover:text-indigo-500">Catálogo</Link>
-          <Link to="/encomendas" className="hover:text-indigo-500">Encomendas</Link>
+    <header className="bg-[#4A7C96] border-b border-[#E8B864] sticky top-0 z-50" id="inicio">
+    <div className="w-full mx-auto px-6 md:px-12 lg:px-16 h-16 flex items-center justify-between">
+      
+      <Link to="/" className="flex items-center gap-3 shrink-0">
+        <img src={Logo} className="w-10 h-10" alt="Logo" />
+        <h1 className="text-2xl font-bold text-[#F7E9D0] tracking-tighter">
+          Farol das Artes
+        </h1>
+      </Link>
+
+      <div className="flex items-center gap-6 md:gap-10">
+        
+        <nav className="hidden md:flex gap-6 text-sm font-medium">
+          <Link to="/catalogo" className="text-[#F7E9D0] hover:text-[#E8B864] transition-colors">
+            Catálogo
+          </Link>
+          <Link to="/encomendas" className="text-[#F7E9D0] hover:text-[#E8B864] transition-colors">
+            Encomendas
+          </Link>
         </nav>
-        <div className="flex gap-4">
-          <button className="p-2 hover:bg-gray-100 rounded-full">🔍</button>
-          
-          <Link to="/carrinho" className="p-2 hover:bg-gray-100 rounded-full relative flex items-center justify-center transition-colors">
+
+        <div className="flex items-center gap-2">
+          <Link to="/carrinho" className="p-2 text-[#F7E9D0] hover:bg-white/10 rounded-full relative flex items-center justify-center transition-colors">
             🛒
             {totalCartItems > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold shadow-xs border-2 border-white">
+              <span className="absolute -top-1 -right-1 bg-[#B15E4B] text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold border-2 border-[#4A7C96]">
                 {totalCartItems}
               </span>
             )}
@@ -40,19 +52,20 @@ export default function Header() {
 
           {user ? (
             <Link 
-              to="/perfil"
-              title="Meu Perfil" 
-              className="w-10 h-10 flex items-center justify-center bg-indigo-100 text-indigo-700 font-bold rounded-full hover:bg-indigo-200 transition-colors"
+              to="/perfil" 
+              className="ml-2 w-9 h-9 flex items-center justify-center bg-[#F7E9D0] text-[#4A7C96] font-bold rounded-full hover:bg-[#E8B864] transition-colors"
             >
               {getInitials(user.name)}
             </Link>
           ) : (
-            <Link to="/login" className="p-2 flex items-center justify-center hover:bg-gray-100 rounded-full transition-colors w-10 h-10">
+            <Link to="/login" className="p-2 text-[#F7E9D0] hover:bg-white/10 rounded-full transition-colors">
               👤
             </Link>
           )}
         </div>
+
       </div>
-    </header>
+    </div>
+  </header>
   );
 }

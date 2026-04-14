@@ -5,7 +5,6 @@ export default function Profile() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  // Se, de alguma forma, o usuário cair aqui sem estar logado
   if (!user) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-24 w-full flex-grow text-center">

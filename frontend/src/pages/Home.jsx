@@ -10,11 +10,11 @@ export default function Home() {
       <section className="w-full px-6 md:px-12 lg:px-16 py-12 md:py-24 grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 items-center">
         <div>
           <span className="text-[#4A7C96] font-semibold tracking-wider uppercase text-sm mb-4 block">Nossos Produtos</span>
-          <h2 className="text-4xl md:text-6xl font-extrabold mb-6">Moda para suas bonecas e bichinhos sob encomenda</h2>
+          <h2 className="text-4xl md:text-6xl font-extrabold mb-6 text-[#B15E4B]">Moda para suas bonecas e bichinhos sob encomenda</h2>
           <p className="text-lg text-[#4A7C96] mb-8 leading-relaxed">
             Descubra peças exclusivas, feitas à mão com muito amor e carinho!
           </p>
-          <button className="bg-[#B15E4B] text-white font-bold px-8 py-3 rounded-full hover:bg-[#4A7C96] transition shadow"
+          <button className="bg-[#4A7C96] text-white font-bold px-8 py-3 rounded-full hover:bg-[#B15E4B] transition shadow"
           onClick={() => navigate("/catalogo")}>
             Ver Catálogo
           </button>
@@ -37,7 +37,7 @@ export default function Home() {
           />
         </div>
         <div>
-          <h1>Nossa história</h1>
+          <h1 className='text-[#B15E4B] font-extrabold'>Nossa história</h1>
           <p>
           O Farol das Artes iniciou suas atividades em 2001 na feira de Barão 
           que naquela época acontecia no bairro Guará em Campinas SP, 
@@ -52,8 +52,7 @@ export default function Home() {
           na Praça do Côco em Barão Geraldo.
           Temos uma estrada de mais de 25 anos com produtos voltados ao universo 
           infantil, com conserto e confecção de bonecas, roupas e acessórios 
-          para bonecas assim como bichinhos de pano. <br /> 
-          Sempre procurando despertar o lúdico no universo infantil!
+          para bonecas assim como bichinhos de pano. Sempre procurando despertar o lúdico no universo infantil!
           </p>
         </div>
       </section>

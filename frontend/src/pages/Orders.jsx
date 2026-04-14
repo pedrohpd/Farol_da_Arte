@@ -7,11 +7,9 @@ export default function Orders() {
   const [submitted, setSubmitted] = useState(false);
   const [showAuthWarning, setShowAuthWarning] = useState(false);
 
-  // States with SessionStorage initialization
   const [modelo, setModelo] = useState(() => sessionStorage.getItem('@draft:modelo') || '');
   const [descricao, setDescricao] = useState(() => sessionStorage.getItem('@draft:descricao') || '');
 
-  // Auto-save drats to ensure user doesn't lose text when navigating to Login
   useEffect(() => {
     sessionStorage.setItem('@draft:modelo', modelo);
     sessionStorage.setItem('@draft:descricao', descricao);
@@ -24,7 +22,6 @@ export default function Orders() {
       return;
     }
 
-    // Sucesso verdadeiro
     sessionStorage.removeItem('@draft:modelo');
     sessionStorage.removeItem('@draft:descricao');
     setSubmitted(true);
@@ -32,20 +29,19 @@ export default function Orders() {
   };
 
   return (
-    <div className="w-full px-6 md:px-16 lg:px-48 xl:px-80 py-12 md:py-24 flex-grow">
+    <div className="w-full px-6 md:px-16 lg:px-48 xl:px-80 py-12 md:py-24 flex-grow bg-[#F7E9D0]/30 min-h-screen">
       <div className="text-center mb-12">
-        <h2 className="text-4xl font-extrabold mb-4">Faça sua Encomenda</h2>
-        <p className="text-gray-600 text-lg">
-          Sonhou com uma roupinha específica para sua boneca? Preencha os detalhes abaixo, anexe imagens de referência, e nós daremos vida a essa ideia!
-        </p>
+        <h2 className="text-4xl font-extrabold text-[#B15E4B] mb-4 uppercase tracking-tight">
+          Faça a sua encomenda
+        </h2>
       </div>
 
       {submitted ? (
-        <div className="bg-green-50 border border-green-200 rounded-2xl p-8 text-center text-green-800">
-          <div className="text-4xl mb-4">✨</div>
-          <h3 className="text-2xl font-bold mb-2">Sua encomenda foi recebida!</h3>
-          <p>
-            Analisaremos as especificações e as fotos de referência e entraremos em contato através do e-mail fornecido em breve.
+        <div className="bg-white border-2 border-[#E8B864] rounded-3xl p-10 text-center shadow-xl">
+          <div className="text-5xl mb-6">✨</div>
+          <h3 className="text-2xl font-bold text-[#4A7C96] mb-4 uppercase">Pedido Enviado com Sucesso!</h3>
+          <p className="text-gray-600 mb-8">
+            Analisaremos cada detalhe com carinho. Fique atento ao seu e-mail, entraremos em contato em breve para combinar os próximos passos.
           </p>
           <button 
             onClick={() => {
@@ -53,85 +49,73 @@ export default function Orders() {
               setModelo('');
               setDescricao('');
             }}
-            className="mt-6 font-semibold text-green-700 hover:text-green-900 underline"
+            className="bg-[#B15E4B] text-white px-8 py-3 rounded-full font-bold hover:bg-[#4A7C96] transition-all shadow-lg uppercase text-sm tracking-widest"
           >
-            Fazer nova encomenda
+            Fazer Nova Encomenda
           </button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6 md:p-10 space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-2xl border border-[#F7E9D0] p-8 md:p-12 space-y-8">
           
-          {user && (
-            <div className="bg-emerald-50 border border-emerald-100 p-5 rounded-xl text-emerald-900 text-sm mb-6 shadow-sm">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xl">✅</span> 
-                <strong className="text-base">Perfil de envio confirmado</strong>
-              </div>
-              <p className="ml-7"><strong>Nome:</strong> {user.name} <br />
-              <strong>Endereço:</strong> {
-                typeof user.address === 'object' 
-                  ? `${user.address.rua}, ${user.address.numero} - ${user.address.bairro}, ${user.address.cidade}/${user.address.estado} (CEP: ${user.address.cep})`
-                  : user.address
-              }</p>
-            </div>
-          )}
-
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Qual o modelo da boneca? *</label>
+            <label className="block text-xs font-bold text-[#4A7C96] uppercase tracking-widest mb-2 ml-1">
+              Modelo da sua Boneca
+            </label>
             <input 
               type="text" 
               required 
               value={modelo}
               onChange={(e) => setModelo(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 focus:bg-white transition-colors"
-              placeholder="Ex: Blythe, Barbie Curvy, Monster High, etc."
+              className="w-full px-5 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#4A7C96] focus:ring-0 outline-none bg-gray-50 focus:bg-white transition-all text-gray-700"
+              placeholder="Ex: Baby Alive, Barbie, Monster High..."
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Descreva como deseja a roupinha *</label>
+            <label className="block text-xs font-bold text-[#4A7C96] uppercase tracking-widest mb-2 ml-1">
+              Detalhes da Peça
+            </label>
             <textarea 
               required 
-              rows="4"
+              rows="5"
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-gray-50 focus:bg-white transition-colors resize-y"
-              placeholder="Detalhe cores, estilo, tipo de tecido preferencial, etc."
+              className="w-full px-5 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#4A7C96] focus:ring-0 outline-none bg-gray-50 focus:bg-white transition-all text-gray-700 resize-none"
+              placeholder="Descreva a peça desejada (calça, vestido), o estilo, cores e tecidos que você imagina..."
             />
           </div>
 
-          <div>
-             <label className="block text-sm font-semibold text-gray-700 mb-1">Foto de Referência</label>
-             <p className="text-xs text-gray-500 mb-2">Anexe imagens para me ajudar a entender melhor o estilo e os detalhes da peça desejada.</p>
+          <div className="bg-[#4A7C96]/5 p-6 rounded-2xl border-2 border-dashed border-[#4A7C96]/20">
+             <label className="block text-sm font-bold text-[#4A7C96] mb-1 uppercase tracking-tight">Fotos de Referência</label>
+             <p className="text-xs text-gray-500 mb-4">Anexe imagens para inspiração</p>
              <input 
                type="file" 
-               accept="image/png, image/jpeg, image/webp"
+               accept="image/*"
                multiple
-               className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 transition-colors"
+               className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-bold file:uppercase file:bg-[#4A7C96] file:text-white hover:file:bg-[#B15E4B] file:transition-all cursor-pointer"
              />
           </div>
 
           {showAuthWarning && (
-            <div className="bg-amber-50 text-amber-800 p-5 rounded-xl border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
-              <div>
-                <strong className="block mb-1 text-base">⚠️ Falta preencher seus dados!</strong>
-                <p className="text-sm">Por favor, preencha onde devemos entregar sua encomenda clicando ao lado.</p>
+            <div className="bg-[#B15E4B]/10 text-[#B15E4B] p-6 rounded-2xl border border-[#B15E4B]/20 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="text-center md:text-left">
+                <strong className="block text-lg uppercase tracking-tight">Quase lá!</strong>
+                <p className="text-sm opacity-80">Precisamos dos seus dados de entrega para processar a encomenda.</p>
               </div>
-              <Link to="/login" className="bg-amber-500 text-white font-bold px-6 py-3 rounded-xl hover:bg-amber-600 transition whitespace-nowrap shadow-md">
-                Preencher Dados
+              <Link to="/login" className="bg-[#B15E4B] text-white font-bold px-8 py-3 rounded-full hover:bg-[#423E37] transition shadow-xl whitespace-nowrap uppercase text-xs tracking-widest">
+                Entrar na sua conta 
               </Link>
             </div>
           )}
 
           <button 
             type="submit" 
-            className="w-full bg-[#B15E4B] text-white font-bold px-8 py-3 rounded-full hover:bg-[#4A7C96] transition shadow transform hover:-translate-y-0.5 active:translate-y-0 mt-2"
+            className="w-full bg-[#4A7C96] text-white font-bold px-8 py-5 rounded-full hover:bg-[#B15E4B] transition-all shadow-xl hover:shadow-[#B15E4B]/20 transform hover:-translate-y-1 active:translate-y-0 uppercase tracking-[0.2em] text-sm"
           >
-            Enviar Solicitação
+            Enviar
           </button>
         </form>
       )}
-
     </div>
   );
 }

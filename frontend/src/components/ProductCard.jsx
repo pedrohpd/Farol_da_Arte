@@ -23,7 +23,7 @@ export function ProductCard({ product, onAddToCart }) {
         </span>
         <button 
           onClick={() => onAddToCart(product)}
-          title="Adicionar à sacola"
+          title="Adicionar ao carrinho"
           className="bg-[#4A7C96] text-[#F7E9D0] p-2 rounded-full hover:bg-[#B15E4B] transition-all flex items-center justify-center w-10 h-10 shadow-sm active:scale-90"
         >
           <span className="text-lg">🛒</span>

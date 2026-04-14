@@ -18,7 +18,7 @@ export default function Catalog() {
       id: 2,
       name: "Suéter de Tricô Rosa",
       description: "Tambem nao sei o tipo de tecido",
-      price: "R$ 60,00",
+      price: "R$ 40,00",
       image: Vestido,
     }
   ];

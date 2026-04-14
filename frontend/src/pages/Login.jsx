@@ -25,7 +25,7 @@ export default function Login() {
     setError('');
 
     if (isRegistering) {
-      if (!name || !email || !password || !cep || !rua || !numero || !cidade || !estado) {
+      if (!name || !email || !password || !cep || !rua || !numero || !bairro || !cidade || !estado) {
         setError('Por favor, preencha todos os campos para o cadastro.');
         return;
       }
@@ -37,7 +37,7 @@ export default function Login() {
     }
     
     saveProfile({
-      name: isRegistering ? name : (user?.name || 'Viajante do Farol'),
+      name: isRegistering ? name : (user?.name || 'Usuario'),
       email,
       address: isRegistering ? { cep, rua, numero, bairro, cidade, estado } : user?.address
     });
@@ -104,8 +104,10 @@ export default function Login() {
             {isRegistering && (
               <div className="mt-8 pt-6 border-t border-gray-100">
                 <h3 className="text-lg font-bold text-[#B15E4B] mb-4 uppercase tracking-wide">Endereço de Entrega</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="col-span-2">
+                <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
+                  
+                  {/* CEP */}
+                  <div className="col-span-2 md:col-span-2">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">CEP</label>
                     <input 
                       type="text" 
@@ -115,7 +117,22 @@ export default function Login() {
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all"
                     />
                   </div>
-                  <div className="col-span-2">
+
+                  {/* ESTADO (UF) */}
+                  <div className="col-span-2 md:col-span-1">
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">UF</label>
+                    <input 
+                      type="text" 
+                      maxLength="2"
+                      value={estado}
+                      onChange={(e) => setEstado(e.target.value.toUpperCase())}
+                      placeholder="SP"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all uppercase"
+                    />
+                  </div>
+
+                  {/* CIDADE */}
+                  <div className="col-span-4 md:col-span-3">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Cidade</label>
                     <input 
                       type="text" 
@@ -124,7 +141,9 @@ export default function Login() {
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all"
                     />
                   </div>
-                  <div className="col-span-3">
+
+                  {/* RUA */}
+                  <div className="col-span-3 md:col-span-4">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Rua / Logradouro</label>
                     <input 
                       type="text" 
@@ -133,7 +152,9 @@ export default function Login() {
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all"
                     />
                   </div>
-                  <div className="col-span-1">
+
+                  {/* NÚMERO */}
+                  <div className="col-span-1 md:col-span-2">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Nº</label>
                     <input 
                       type="text" 
@@ -142,6 +163,18 @@ export default function Login() {
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all"
                     />
                   </div>
+
+                  {/* BAIRRO */}
+                  <div className="col-span-4">
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Bairro</label>
+                    <input 
+                      type="text" 
+                      value={bairro}
+                      onChange={(e) => setBairro(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all"
+                    />
+                  </div>
+
                 </div>
               </div>
             )}

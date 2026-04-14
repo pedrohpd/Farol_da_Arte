@@ -13,7 +13,7 @@ export default function Profile() {
           Você não configurou seus dados de envio nesta máquina ainda.
         </p>
         <button 
-          onClick={() => navigate('/login')}
+          onClick={() => navigate('/login', { state: { registering: true } })}
           className="bg-[#4A7C96] text-[#F7E9D0] font-bold text-lg px-8 py-3 rounded-full hover:bg-[#B15E4B] transition-all inline-block shadow-lg"
         >
           Configurar Perfil
@@ -65,7 +65,7 @@ export default function Profile() {
       <div className="flex flex-col items-center gap-4 border-t border-[#F7E9D0] pt-10">
         
         <button 
-          onClick={() => navigate('/login')}
+          onClick={() => navigate('/login', { state: { registering: true } })}
           className="w-full max-w-xs px-8 py-4 bg-[#4A7C96] text-white rounded-full font-bold shadow-md hover:bg-[#B15E4B] transition-all text-center uppercase tracking-widest text-sm"
         >
           Editar Dados

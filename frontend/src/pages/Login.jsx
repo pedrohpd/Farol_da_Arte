@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
   const { user, saveProfile } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [isRegistering, setIsRegistering] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(location.state?.registering || false);
 
   // Estados dos campos
   const [name, setName] = useState('');

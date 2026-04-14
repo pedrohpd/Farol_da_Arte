@@ -21,6 +21,30 @@ export default function Login() {
   const [estado, setEstado] = useState('');
   const [error, setError] = useState('');
 
+  const handleCepChange = async (e) => {
+    let value = e.target.value.replace(/\D/g, '');
+    let formatted = value;
+    if (value.length > 5) {
+      formatted = value.replace(/^(\d{5})(\d)/, '$1-$2');
+    }
+    setCep(formatted);
+
+    if (value.length === 8) {
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${value}/json/`);
+        const data = await response.json();
+        if (!data.erro) {
+          setRua(data.logradouro || '');
+          setBairro(data.bairro || '');
+          setCidade(data.localidade || '');
+          setEstado(data.uf || '');
+        }
+      } catch (error) {
+        console.error('Erro ao buscar o CEP:', error);
+      }
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
@@ -113,7 +137,8 @@ export default function Login() {
                     <input 
                       type="text" 
                       value={cep}
-                      onChange={(e) => setCep(e.target.value)}
+                      onChange={handleCepChange}
+                      maxLength="9"
                       placeholder="00000-000"
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all"
                     />

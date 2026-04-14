@@ -7,7 +7,7 @@ import CartProductCard from '../components/CartProductCard'; // Importação aqu
 export default function Cart() {
   const { cart, removeFromCart, clearCart } = useCart();
   const { user } = useAuth();
-  
+
   const [finished, setFinished] = useState(false);
   const [showAuthWarning, setShowAuthWarning] = useState(false);
 
@@ -34,10 +34,9 @@ export default function Cart() {
     return (
       <div className="max-w-3xl mx-auto px-4 py-24 w-full flex-grow text-center bg-[#F7E9D0]/30 min-h-screen">
         <div className="bg-white border-2 border-[#E8B864] rounded-3xl p-10 shadow-xl">
-          <div className="text-6xl mb-6">🎉</div>
           <h2 className="text-4xl font-extrabold text-[#B15E4B] mb-4 uppercase tracking-tighter">Compra Confirmada!</h2>
           <p className="text-gray-600 text-xl mb-8 italic">
-            "As roupinhas mágicas já estão sendo preparadas para <strong>{user?.name}</strong>."
+            Obrigado pela preferência!
           </p>
           <Link 
             to="/catalogo"

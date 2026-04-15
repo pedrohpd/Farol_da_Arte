@@ -1,4 +1,4 @@
-# 🎨 Farol da Arte
+# 🎨 Farol das Artes
 
 <p align="center">
   <img alt="Disciplina" src="https://img.shields.io/badge/SCC0219-Introdu%C3%A7%C3%A3o%20ao%20Desenvolvimento%20Web-blue?style=for-the-badge">
@@ -13,7 +13,7 @@
 
 ## 🔎 Sobre o Projeto
 
-O **Farol da Arte** é uma aplicação web desenvolvida como requisito avaliativo da disciplina.
+O **Farol das Artes** é uma aplicação web desenvolvida como requisito avaliativo da disciplina.
 
 ## 🎓 Autores
 

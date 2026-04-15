@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 
 export default function Profile() {
-  const { user, logout } = useAuth();
+  const { user, logout, deleteAccount } = useAuth();
   const { clearCart } = useCart();
   const navigate = useNavigate();
 
@@ -14,7 +14,7 @@ export default function Profile() {
         <p className="text-gray-600 text-lg mb-8">
           Você não configurou seus dados de envio nesta máquina ainda.
         </p>
-        <button 
+        <button
           onClick={() => navigate('/login', { state: { registering: true } })}
           className="bg-[#4A7C96] text-[#F7E9D0] font-bold text-lg px-8 py-3 rounded-full hover:bg-[#B15E4B] transition-all inline-block shadow-lg"
         >
@@ -30,12 +30,18 @@ export default function Profile() {
     navigate('/');
   };
 
+  const handleDeleteAccount = () => {
+    deleteAccount();
+    clearCart();
+    navigate('/');
+  }
+
   const getFirstName = (fullName) => {
     if (!fullName) return '';
     return fullName.split(' ')[0];
   };
 
-  const formattedAddress = typeof user.address === 'object' 
+  const formattedAddress = typeof user.address === 'object'
     ? `${user.address.rua}, ${user.address.numero} - ${user.address.bairro}, ${user.address.cidade}/${user.address.estado} (CEP: ${user.address.cep})`
     : user.address;
 
@@ -66,23 +72,23 @@ export default function Profile() {
       </div>
 
       <div className="flex flex-col items-center gap-4 border-t border-[#F7E9D0] pt-10">
-        
-        <button 
+
+        <button
           onClick={() => navigate('/login', { state: { registering: true } })}
           className="w-full max-w-xs px-8 py-4 bg-[#4A7C96] text-white rounded-full font-bold shadow-md hover:bg-[#B15E4B] transition-all text-center uppercase tracking-widest text-sm"
         >
           Editar Dados
         </button>
-        
-        <button 
+
+        <button
           onClick={handleLogout}
           className="w-full max-w-xs px-8 py-4 bg-white text-[#B15E4B] border-2 border-[#B15E4B] rounded-full font-bold hover:bg-[#B15E4B] hover:text-white transition-all text-center uppercase tracking-widest text-sm"
         >
           Sair da Conta
         </button>
 
-        <button 
-          onClick={() => { /* lógica de exclusão */ }}
+        <button
+          onClick={handleDeleteAccount}
           className="w-full max-w-xs px-8 py-4 bg-transparent text-gray-400 rounded-full font-bold hover:text-red-600 transition-all text-center text-xs underline decoration-dotted"
         >
           Excluir Perfil

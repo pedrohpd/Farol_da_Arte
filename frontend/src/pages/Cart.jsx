@@ -7,7 +7,7 @@ import CartProductCard from '../components/CartProductCard'; // Importação aqu
 export default function Cart() {
   const { cart, removeFromCart, clearCart } = useCart();
   const { user } = useAuth();
-  
+
   const [finished, setFinished] = useState(false);
   const [showAuthWarning, setShowAuthWarning] = useState(false);
 
@@ -39,7 +39,7 @@ export default function Cart() {
           <p className="text-gray-600 text-xl mb-8 italic">
             "As roupinhas mágicas já estão sendo preparadas para <strong>{user?.name}</strong>."
           </p>
-          <Link 
+          <Link
             to="/catalogo"
             className="font-bold bg-[#B15E4B] text-white px-10 py-4 rounded-full hover:bg-[#4A7C96] transition-all inline-block text-sm uppercase tracking-widest shadow-lg"
           >
@@ -64,7 +64,7 @@ export default function Cart() {
       {cart.length === 0 ? (
         <div className="text-center py-24 bg-white rounded-3xl border border-[#F7E9D0] shadow-sm">
           <p className="text-gray-400 text-xl mb-8 italic">Seu carrinho está vazio...</p>
-          <Link 
+          <Link
             to="/catalogo"
             className="bg-[#4A7C96] text-white font-bold px-10 py-4 rounded-full hover:bg-[#B15E4B] transition-all shadow-lg uppercase text-sm tracking-widest"
           >
@@ -73,13 +73,13 @@ export default function Cart() {
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          
+
           <div className="lg:col-span-2 space-y-6">
             {cart.map((item) => (
-              <CartProductCard 
-                key={item.id} 
-                item={item} 
-                onRemove={removeFromCart} 
+              <CartProductCard
+                key={item.id}
+                item={item}
+                onRemove={removeFromCart}
               />
             ))}
           </div>
@@ -89,7 +89,7 @@ export default function Cart() {
               <h3 className="font-bold text-xs uppercase text-[#4A7C96] mb-6 pb-4 border-b border-gray-100">
                 Resumo da Compra
               </h3>
-              
+
               <div className="space-y-4 mb-8">
                 <div className="pt-4 border-t border-gray-100 flex justify-between items-end">
                   <span className="text-[#423E37] font-bold uppercase text-xs">Total</span>
@@ -107,13 +107,13 @@ export default function Cart() {
                 </div>
               )}
 
-              <button 
+              <button
                 onClick={handleCheckout}
                 className="w-full bg-[#4A7C96] text-white font-bold text-sm uppercase tracking-[0.2em] py-5 rounded-full shadow-lg hover:bg-[#B15E4B] transition-all transform hover:-translate-y-1 active:translate-y-0"
               >
                 Finalizar Compra
               </button>
-              <button 
+              <button
                 onClick={clearCart}
                 className="w-full mt-4 bg-transparent text-[#B15E4B] border-2 border-[#B15E4B] font-bold text-sm uppercase tracking-[0.1em] py-4 rounded-full hover:bg-[#B15E4B] hover:text-white transition-all transform hover:-translate-y-1 active:translate-y-0"
               >

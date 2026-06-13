@@ -3,16 +3,16 @@ package models
 import "time"
 
 type Order struct {
-	Code          uint      `gorm:"primaryKey;" json:"code"`
-	OrderTime   time.Time   `gorm:"type:timestamptz;not null" json:"order_time"`
-	UserCPF     uint        `gorm:"not null" json:"user_cpf"`
-	TotalAmount float64     `gorm:"not null" json:"total_amount"`
+	Code          uint      `gorm:"primaryKey;"`
+	OrderTime   time.Time   `gorm:"type:timestamptz;not null"`
+	UserCPF     uint        `gorm:"not null"`
+	TotalAmount float64     `gorm:"not null"`
 	// Status      string      `gorm:"size:20;default:'pending';not null" json:"status"`
 
 	// Relacionamento com o Usuário (Chave Estrangeira apontando para o CPF)
-	User        User        `gorm:"foreignKey:UserCPF;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT" json:"user,omitempty"`
+	User        User        `gorm:"foreignKey:UserCPF;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
 	// Relacionamento um-para-muitos com os itens do pedido
-	Items       []OrderItem `gorm:"foreignKey:OrderID" json:"items"`
+	Items       []OrderItem `gorm:"foreignKey:OrderID"`
 }
 
 type OrderItem struct {

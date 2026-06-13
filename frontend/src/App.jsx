@@ -7,6 +7,7 @@ import Orders from './pages/Orders';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Cart from './pages/Cart';
+import ProductDetails from './pages/ProductDetails';
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/perfil" element={<Profile />} />
           <Route path="/carrinho" element={<Cart />} />
+          <Route path="/produto/:id" element={<ProductDetails />} />
         </Routes>
       </main>
 

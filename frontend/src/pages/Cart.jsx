@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
-import CartProductCard from '../components/CartProductCard'; // Importação aqui
+import CartProductCard from '../components/CartProductCard';
 
 export default function Cart() {
-  const { cart, removeFromCart, clearCart } = useCart();
+  // 1. Adicione o "updateQuantity" vindo do useCart
+  const { cart, removeFromCart, clearCart, updateQuantity } = useCart();
   const { user } = useAuth();
 
   const [finished, setFinished] = useState(false);
@@ -35,9 +36,7 @@ export default function Cart() {
       <div className="max-w-3xl mx-auto px-4 py-24 w-full flex-grow text-center bg-[#F7E9D0]/30 min-h-screen">
         <div className="bg-white border-2 border-[#E8B864] rounded-3xl p-10 shadow-xl">
           <h2 className="text-4xl font-extrabold text-[#B15E4B] mb-4 uppercase tracking-tighter">Compra Confirmada!</h2>
-          <p className="text-gray-600 text-xl mb-8 italic">
-            Obrigado pela preferência!
-          </p>
+          <p className="text-gray-600 text-xl mb-8 italic">Obrigado pela preferência!</p>
           <Link
             to="/catalogo"
             className="font-bold bg-[#B15E4B] text-white px-10 py-4 rounded-full hover:bg-[#4A7C96] transition-all inline-block text-sm uppercase tracking-widest shadow-lg"
@@ -52,9 +51,7 @@ export default function Cart() {
   return (
     <div className="w-full px-6 md:px-12 lg:px-24 py-12 md:py-16 flex-grow bg-[#F7E9D0]/30 min-h-screen">
       <div className="flex items-center justify-between mb-10 border-b border-[#E8B864]/30 pb-6">
-        <h2 className="text-4xl text-[#B15E4B] font-extrabold uppercase tracking-tight">
-          Seu Carrinho
-        </h2>
+        <h2 className="text-4xl text-[#B15E4B] font-extrabold uppercase tracking-tight">Seu Carrinho</h2>
         <span className="text-[#4A7C96] font-bold bg-white px-4 py-2 rounded-full border border-[#4A7C96]/20 shadow-sm">
           {cart.length} {cart.length === 1 ? 'item' : 'itens'}
         </span>
@@ -72,13 +69,14 @@ export default function Cart() {
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-
           <div className="lg:col-span-2 space-y-6">
             {cart.map((item) => (
               <CartProductCard
                 key={item.id}
                 item={item}
                 onRemove={removeFromCart}
+                // 2. Passe a função do contexto para o componente filho aqui:
+                onUpdateQuantity={updateQuantity} 
               />
             ))}
           </div>
@@ -120,7 +118,6 @@ export default function Cart() {
               </button>
             </div>
           </div>
-
         </div>
       )}
     </div>

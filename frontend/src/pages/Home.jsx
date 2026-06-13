@@ -38,17 +38,19 @@ export default function Home() {
         </div>
         <div>
           <h1 className='text-[#B15E4B] font-extrabold'>Nossa história</h1>
-          <p>
+          <p className='whitespace-pre-line'>
           O Farol das Artes iniciou suas atividades em 2001, na feira de Barão, 
           que naquela época acontecia no bairro Guará em Campinas SP, 
           quinzenalmente aos domingos. Os produtos na época eram flores de meia de seda e imãs de geladeira. 
           Em 2001, fomos convidados a fazer parte do grupo de expositores 
           do Espaço Castelo das Artes, no bairro Castelo, e lá ficamos até 2010. 
+          <br/>
           Com o passar do tempo, modificamos nosso portfólio passando a consertar 
           bonecas e fazer roupas e sapatos, devolvendo a muitas crianças o sorriso 
           e em alguns adultos, suas lembranças. Já em 2011, voltamos às nossas raízes e voltamos
           a fazer parte do grupo de expositores da Feira de Barão agora instalada 
           na Praça do Côco em Barão Geraldo.
+          <br/>
           Temos uma estrada de mais de 25 anos com produtos voltados ao universo 
           infantil, com conserto e confecção de bonecas, roupas e acessórios 
           para bonecas assim como bichinhos de pano. Sempre procurando despertar o lúdico no universo infantil!

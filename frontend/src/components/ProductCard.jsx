@@ -1,8 +1,10 @@
+import { useParams, Link } from 'react-router-dom';
 import { CartIcon } from './Icons';
 
 export function ProductCard({ product, onAddToCart }) {
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#F7E9D0] hover:shadow-md hover:border-[#E8B864] transition-all group flex flex-col h-full">
+      <Link to={`/produto/${product.id}`} className="cursor-pointer block flex-grow">
       <div className="aspect-square bg-[#F7E9D0]/30 rounded-xl overflow-hidden mb-4 relative">
         <img
           src={product.image}
@@ -15,14 +17,12 @@ export function ProductCard({ product, onAddToCart }) {
       <h4 className="font-bold text-lg text-[#B15E4B] mb-1 leading-tight">
         {product.name}
       </h4>
-      <p className="text-[#6B7F5E] text-sm mb-4 line-clamp-2">
-        {product.description}
-      </p>
+      <span className="text-xl text-[#B15E4B]">
+          {product.price}
+      </span>
+      </Link>
 
       <div className="flex justify-between items-center mt-auto pt-2">
-        <span className="text-xl text-[#B15E4B]">
-          {product.price}
-        </span>
         <button
           onClick={() => onAddToCart(product)}
           title="Adicionar ao carrinho"

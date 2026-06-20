@@ -39,6 +39,11 @@ export default function Header() {
             <Link to="/encomendas" className="text-[#F7E9D0] hover:text-[#E8B864] transition-colors">
               Encomendas
             </Link>
+            {user && user.is_admin && (
+              <Link to="/admin" className="text-[#F7E9D0] font-bold hover:text-[#E8B864] transition-colors">
+                Painel Admin
+              </Link>
+            )}
           </nav>
 
           <div className="flex items-center gap-2">

@@ -13,30 +13,31 @@ export function CartProvider({ children }) {
     localStorage.setItem('@FarolDaArte:cartItems', JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (product) => {
+  const addToCart = (product, quantityToAdd = 1) => {
     setCart((prevCart) => {
+      const productCode = product.code || product.id;
       // Se o produto já está no carrinho, apenas aumentamos a quantidade
-      const existingProduct = prevCart.find(item => item.id === product.id);
+      const existingProduct = prevCart.find(item => (item.code || item.id) === productCode);
       if (existingProduct) {
         return prevCart.map(item =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          (item.code || item.id) === productCode ? { ...item, quantity: item.quantity + quantityToAdd } : item
         );
       }
-      // Se for inédito, adicionamos na lista com quantidade = 1
-      return [...prevCart, { ...product, quantity: 1 }];
+      // Se for inédito, adicionamos na lista com a quantidade selecionada
+      return [...prevCart, { ...product, quantity: quantityToAdd }];
     });
   };
 
-  const removeFromCart = (id) => {
-    setCart((prevCart) => prevCart.filter(item => item.id !== id));
+  const removeFromCart = (code) => {
+    setCart((prevCart) => prevCart.filter(item => (item.code || item.id) !== code));
   };
 
   const clearCart = () => setCart([]);
 
-  const updateQuantity = (id, newQuantity) => {
+  const updateQuantity = (code, newQuantity) => {
     setCart(prevCart =>
       prevCart.map(item =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
+        (item.code || item.id) === code ? { ...item, quantity: newQuantity } : item
       )
     );
   };

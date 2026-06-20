@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext } from 'react';
+import api from '../services/api';
 
 const AuthContext = createContext();
 
@@ -6,43 +7,78 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedSession = localStorage.getItem('@FarolDaArte:session');
-    if (storedSession) {
-      setUser(JSON.parse(storedSession));
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+    if (storedToken && storedUser) {
+      setUser(JSON.parse(storedUser));
     }
   }, []);
 
-  const register = (userData) => {
-    localStorage.setItem('@FarolDaArte:registeredUser', JSON.stringify(userData));
-    setUser(userData);
-    localStorage.setItem('@FarolDaArte:session', JSON.stringify(userData));
-    return { success: true };
+  const register = async (userData) => {
+    try {
+      const response = await api.post('/register', {
+        name: userData.name,
+        email: userData.email,
+        password: userData.password,
+        state: userData.address.estado,
+        city: userData.address.cidade,
+        street: userData.address.rua,
+        number: parseInt(userData.address.numero) || 0,
+        additional_info: userData.address.bairro || 'N/A',
+        cep: userData.address.cep,
+        cpf: userData.cpf
+      });
+      
+      const { token, user: newUser } = response.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(newUser));
+      setUser(newUser);
+      
+      return { success: true };
+    } catch (error) {
+      return { 
+        success: false, 
+        message: error.response?.data?.error || 'Erro ao registrar usuário.' 
+      };
+    }
   };
 
-  const login = (email, password) => {
-    const registeredUser = JSON.parse(localStorage.getItem('@FarolDaArte:registeredUser'));
-    if (registeredUser && registeredUser.email === email && registeredUser.password === password) {
-      setUser(registeredUser);
-      localStorage.setItem('@FarolDaArte:session', JSON.stringify(registeredUser));
+  const login = async (email, password) => {
+    try {
+      const response = await api.post('/login', { email, password });
+      const { token, user: loggedUser } = response.data;
+      
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(loggedUser));
+      setUser(loggedUser);
+      
       return { success: true };
-    } else {
-      return { success: false, message: 'Email ou senha incorretos.' };
+    } catch (error) {
+      return { 
+        success: false, 
+        message: error.response?.data?.error || 'Email ou senha incorretos.' 
+      };
     }
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('@FarolDaArte:session');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  };
+
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
   const deleteAccount = () => {
-    localStorage.removeItem('@FarolDaArte:registeredUser');
-    setUser(null);
-    localStorage.removeItem('@FarolDaArte:session');
+    // Optional: implement API call to delete account
+    logout();
   };
 
   return (
-    <AuthContext.Provider value={{ user, register, login, logout, deleteAccount }}>
+    <AuthContext.Provider value={{ user, register, login, logout, deleteAccount, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

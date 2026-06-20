@@ -1,12 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { ProductCard } from '../components/ProductCard';
-import { products } from '../mock_data/products';
+import api from '../services/api';
 
 export default function Catalog() {
   const { addToCart } = useCart();
   
+  const [products, setProducts] = useState([]);
   const [selectedType, setSelectedType] = useState("Todos");
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const response = await api.get('/products');
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    }
+    fetchProducts();
+  }, []);
 
   const categories = ["Todos", ...new Set(products.map(product => product.type))];
 
@@ -47,7 +60,7 @@ export default function Catalog() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
         {filteredProducts.map((product) => (
           <ProductCard 
-            key={product.id} 
+            key={product.code} 
             product={product} 
             onAddToCart={addToCart} 
           />

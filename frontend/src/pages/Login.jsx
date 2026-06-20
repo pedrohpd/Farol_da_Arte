@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { usePopup } from '../contexts/PopupContext';
 
 export default function Login() {
   const { register, login } = useAuth();
+  const { showPopup } = usePopup();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -13,13 +15,13 @@ export default function Login() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [cpf, setCpf] = useState('');
   const [cep, setCep] = useState('');
   const [rua, setRua] = useState('');
   const [numero, setNumero] = useState('');
   const [bairro, setBairro] = useState('');
   const [cidade, setCidade] = useState('');
   const [estado, setEstado] = useState('');
-  const [error, setError] = useState('');
 
   const handleCepChange = async (e) => {
     let value = e.target.value.replace(/\D/g, '');
@@ -45,27 +47,32 @@ export default function Login() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
 
     if (isRegistering) {
-      if (!name || !email || !password || !cep || !rua || !numero || !bairro || !cidade || !estado) {
-        setError('Por favor, preencha todos os campos para o cadastro.');
+      if (!name || !email || !password || !cpf || !cep || !rua || !numero || !bairro || !cidade || !estado) {
+        showPopup('Por favor, preencha todos os campos para o cadastro.', 'error');
         return;
       }
-      register({ name, email, password, address: { cep, rua, numero, bairro, cidade, estado } });
-      navigate('/perfil');
-    } else {
-      if (!email || !password) {
-        setError('Email e senha são obrigatórios.');
-        return;
-      }
-      const result = login(email, password);
+      const result = await register({ name, email, password, cpf, address: { cep, rua, numero, bairro, cidade, estado } });
       if (result.success) {
+        showPopup('Conta criada com sucesso!', 'success');
         navigate('/perfil');
       } else {
-        setError(result.message);
+        showPopup(result.message, 'error');
+      }
+    } else {
+      if (!email || !password) {
+        showPopup('Email e senha são obrigatórios.', 'error');
+        return;
+      }
+      const result = await login(email, password);
+      if (result.success) {
+        showPopup('Login realizado com sucesso!', 'success');
+        navigate('/perfil');
+      } else {
+        showPopup(result.message, 'error');
       }
     }
   };
@@ -81,11 +88,7 @@ export default function Login() {
             </h2>
           </div>
 
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 text-[#B15E4B] rounded-xl text-sm text-center font-bold border border-red-100">
-              {error}
-            </div>
-          )}
+
 
           <form onSubmit={handleSubmit} className="space-y-5">
 
@@ -124,6 +127,19 @@ export default function Login() {
                   placeholder="••••••••"
                 />
               </div>
+              {isRegistering && (
+                <div>
+                  <label className="block text-xs font-bold text-[#4A7C96] uppercase mb-1 ml-1">CPF</label>
+                  <input
+                    type="text"
+                    value={cpf}
+                    onChange={(e) => setCpf(e.target.value.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4'))}
+                    maxLength="14"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all bg-gray-50 focus:bg-white"
+                    placeholder="000.000.000-00"
+                  />
+                </div>
+              )}
             </div>
 
             {isRegistering && (
@@ -180,7 +196,7 @@ export default function Login() {
                     <input
                       type="text"
                       value={numero}
-                      onChange={(e) => setNumero(e.target.value)}
+                      onChange={(e) => setNumero(e.target.value.replace(/\D/g, ''))}
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#4A7C96] outline-none transition-all"
                     />
                   </div>

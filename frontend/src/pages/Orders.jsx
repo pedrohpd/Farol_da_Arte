@@ -10,22 +10,50 @@ export default function Orders() {
   const [modelo, setModelo] = useState(() => sessionStorage.getItem('@draft:modelo') || '');
   const [descricao, setDescricao] = useState(() => sessionStorage.getItem('@draft:descricao') || '');
 
+  const [imageFile, setImageFile] = useState(null);
+
   useEffect(() => {
     sessionStorage.setItem('@draft:modelo', modelo);
     sessionStorage.setItem('@draft:descricao', descricao);
   }, [modelo, descricao]);
 
-  const handleSubmit = (e) => {
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) {
       setShowAuthWarning(true);
       return;
     }
 
-    sessionStorage.removeItem('@draft:modelo');
-    sessionStorage.removeItem('@draft:descricao');
-    setSubmitted(true);
-    setShowAuthWarning(false);
+    try {
+      const formData = new FormData();
+      formData.append('model', modelo);
+      formData.append('description', descricao);
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
+
+      const { default: api } = await import('../services/api');
+      await api.post('/custom-orders', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      sessionStorage.removeItem('@draft:modelo');
+      sessionStorage.removeItem('@draft:descricao');
+      setSubmitted(true);
+      setShowAuthWarning(false);
+      setImageFile(null);
+    } catch (error) {
+      console.error("Erro ao enviar encomenda:", error);
+      alert("Erro ao enviar. Tente novamente mais tarde.");
+    }
   };
 
   return (
@@ -91,7 +119,7 @@ export default function Orders() {
              <input 
                type="file" 
                accept="image/*"
-               multiple
+               onChange={handleFileChange}
                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-bold file:uppercase file:bg-[#4A7C96] file:text-white hover:file:bg-[#B15E4B] file:transition-all cursor-pointer"
              />
           </div>

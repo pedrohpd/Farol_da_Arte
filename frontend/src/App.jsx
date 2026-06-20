@@ -9,6 +9,8 @@ import Profile from './pages/Profile';
 import Cart from './pages/Cart';
 import ProductDetails from './pages/ProductDetails';
 
+import Backoffice from './pages/Backoffice';
+
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col font-sans text-gray-900 bg-[#F7E9D0]">
@@ -23,6 +25,7 @@ export default function App() {
           <Route path="/perfil" element={<Profile />} />
           <Route path="/carrinho" element={<Cart />} />
           <Route path="/produto/:id" element={<ProductDetails />} />
+          <Route path="/admin" element={<Backoffice />} />
         </Routes>
       </main>
 

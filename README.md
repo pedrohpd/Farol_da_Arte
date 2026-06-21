@@ -27,28 +27,57 @@ Este projeto está sendo construído utilizando as seguintes ferramentas princip
 
 - ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 - ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+- ![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
+- ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+- ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 
 ## 📁 Estrutura do Repositório
 
-- `/frontend`: Contém a aplicação de interface de usuário.
+- `/frontend`: Contém a aplicação de interface de usuário (React + Vite).
+- `/backend`: Contém a API REST desenvolvida em Go utilizando Gin e GORM.
 
 ## 🚀 Como Executar
 
-Siga os passos abaixo para rodar o projeto localmente:
+Siga os passos abaixo para rodar o projeto localmente. Para facilitar, incluímos um `Makefile` na raiz do projeto com todos os comandos necessários.
 
-### 🎨 Frontend
+### ⚡ Utilizando o Makefile
 
-1. Entre na pasta do frontend:
-   ```bash
-   cd frontend
-   ```
-2. Instale as dependências:
-   ```bash
-   npm install
-   ```
-3. Inicie a aplicação:
-   ```bash
-   npm run dev
-   ```
+Na raiz do projeto, você pode visualizar todos os comandos disponíveis apenas digitando:
+```bash
+make
+```
+
+Para preparar e rodar o projeto do zero, execute os comandos em terminais separados:
+
+**1. Instale as dependências (Frontend e Backend):**
+```bash
+make setup
+```
+
+**2. Suba o Banco de Dados (PostgreSQL e pgAdmin via Docker):**
+```bash
+make db
+```
+> O banco estará acessível na porta `5432` e o painel pgAdmin em `http://localhost:5050` (Credenciais: `admin@admin.com` / `admin`).
+
+**3. Inicie a API (Backend Go):**
+```bash
+make backend
+```
+
+**4. Inicie a Interface (Frontend React/Vite):**
+```bash
+make frontend
+```
+
+### 🧹 Utilitários
+Para parar o banco de dados, rode:
+```bash
+make stop-db
+```
+Para limpar o ambiente (remover dependências do Node e containers do BD):
+```bash
+make clean
+```
 
 ---

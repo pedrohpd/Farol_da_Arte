@@ -6,13 +6,14 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/minio/minio-go/v7"
 	"gorm.io/gorm"
 )
 
-func SetupRouter(db *gorm.DB) *gin.Engine {
+func SetupRouter(db *gorm.DB, minioClient *minio.Client) *gin.Engine {
 	r := gin.Default()
 
-	// CORS Configuration to allow React frontend
+	// Configuração CORS para permitir frontend React
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:3000"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
@@ -21,9 +22,10 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 		AllowCredentials: true,
 	}))
 
-	// Inject DB into context for handlers
+	// Inserção de DB e MinIO no contexto para handlers
 	r.Use(func(c *gin.Context) {
 		c.Set("db", db)
+		c.Set("minio", minioClient)
 		c.Next()
 	})
 

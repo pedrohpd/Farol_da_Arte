@@ -29,6 +29,7 @@ Este projeto está sendo construído utilizando as seguintes ferramentas princip
 - ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
 - ![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
 - ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+- ![MinIO](https://img.shields.io/badge/MinIO-%23C72E49.svg?style=for-the-badge&logo=minio&logoColor=white)
 - ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 
 ## 📁 Estrutura do Repositório
@@ -54,11 +55,11 @@ Para preparar e rodar o projeto do zero, execute os comandos em terminais separa
 make setup
 ```
 
-**2. Suba o Banco de Dados (PostgreSQL e pgAdmin via Docker):**
+**2. Suba o Banco de Dados e Armazenamento (PostgreSQL, pgAdmin e MinIO via Docker):**
 ```bash
 make db
 ```
-> O banco estará acessível na porta `5432` e o painel pgAdmin em `http://localhost:5050` (Credenciais: `admin@admin.com` / `admin`).
+> O banco de dados estará acessível na porta `5432`, o painel pgAdmin em `http://localhost:5050` (Credenciais: `admin@admin.com` / `admin`) e o Console do MinIO em `http://localhost:9001` (Credenciais: `minioadmin` / `minioadminpassword`).
 
 **3. Inicie a API (Backend Go):**
 ```bash

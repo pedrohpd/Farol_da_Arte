@@ -45,8 +45,14 @@ func main() {
 		}
 		log.Println("Database reset complete.")
 	}
+
+	minioClient, errMinio := database.ConnectMinIO()
+	if errMinio != nil {
+		log.Fatalf("Failed to connect to MinIO: %v", errMinio)
+	}
+
 	// Setup and run Gin router
-	r := api.SetupRouter(db)
+	r := api.SetupRouter(db, minioClient)
 	if err := r.Run(":8080"); err != nil {
 		log.Fatalf("Failed to run server: %v", err)
 	}

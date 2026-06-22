@@ -1,12 +1,17 @@
 package controllers
 
 import (
+	"bytes"
 	"encoding/base64"
+	"fmt"
 	"net/http"
+	"os"
 
 	"backend/internal/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/minio/minio-go/v7"
 	"gorm.io/gorm"
 )
 
@@ -56,14 +61,48 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
-	var imageBytes []byte
+	var imageURL string
 	if req.ImageBase64 != "" {
-		var err error
-		imageBytes, err = base64.StdEncoding.DecodeString(req.ImageBase64)
+		imageBytes, err := base64.StdEncoding.DecodeString(req.ImageBase64)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Dados de imagem inválidos"})
 			return
 		}
+
+		minioClient := c.MustGet("minio").(*minio.Client)
+		bucketName := os.Getenv("MINIO_BUCKET_NAME")
+
+		ext := ".jpg"
+		if req.ImgType == "image/png" {
+			ext = ".png"
+		} else if req.ImgType == "image/gif" {
+			ext = ".gif"
+		} else if req.ImgType == "image/webp" {
+			ext = ".webp"
+		}
+		fileName := fmt.Sprintf("%s%s", uuid.New().String(), ext)
+
+		reader := bytes.NewReader(imageBytes)
+		contentType := req.ImgType
+		if contentType == "" {
+			contentType = "image/jpeg"
+		}
+
+		_, err = minioClient.PutObject(c.Request.Context(), bucketName, fileName, reader, int64(len(imageBytes)), minio.PutObjectOptions{
+			ContentType: contentType,
+		})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Falha ao enviar imagem ao MinIO"})
+			return
+		}
+
+		endpoint := os.Getenv("MINIO_ENDPOINT")
+		useSSLStr := os.Getenv("MINIO_USE_SSL")
+		schema := "http"
+		if useSSLStr == "true" {
+			schema = "https"
+		}
+		imageURL = fmt.Sprintf("%s://%s/%s/%s", schema, endpoint, bucketName, fileName)
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "A imagem é obrigatória para criar um novo produto"})
 		return
@@ -74,8 +113,7 @@ func CreateProduct(c *gin.Context) {
 		Description: req.Description,
 		Type:        req.Type,
 		Price:       req.Price,
-		ImgType:     req.ImgType,
-		ImageData:   imageBytes,
+		ImageURL:    imageURL,
 	}
 
 	product.IsActive = true // active by default
@@ -115,8 +153,41 @@ func UpdateProduct(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Dados de imagem inválidos"})
 			return
 		}
-		product.ImageData = imageBytes
-		product.ImgType = req.ImgType
+
+		minioClient := c.MustGet("minio").(*minio.Client)
+		bucketName := os.Getenv("MINIO_BUCKET_NAME")
+
+		ext := ".jpg"
+		if req.ImgType == "image/png" {
+			ext = ".png"
+		} else if req.ImgType == "image/gif" {
+			ext = ".gif"
+		} else if req.ImgType == "image/webp" {
+			ext = ".webp"
+		}
+		fileName := fmt.Sprintf("%s%s", uuid.New().String(), ext)
+
+		reader := bytes.NewReader(imageBytes)
+		contentType := req.ImgType
+		if contentType == "" {
+			contentType = "image/jpeg"
+		}
+
+		_, err = minioClient.PutObject(c.Request.Context(), bucketName, fileName, reader, int64(len(imageBytes)), minio.PutObjectOptions{
+			ContentType: contentType,
+		})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Falha ao enviar imagem ao MinIO"})
+			return
+		}
+
+		endpoint := os.Getenv("MINIO_ENDPOINT")
+		useSSLStr := os.Getenv("MINIO_USE_SSL")
+		schema := "http"
+		if useSSLStr == "true" {
+			schema = "https"
+		}
+		product.ImageURL = fmt.Sprintf("%s://%s/%s/%s", schema, endpoint, bucketName, fileName)
 	}
 
 	if err := db.Save(&product).Error; err != nil {

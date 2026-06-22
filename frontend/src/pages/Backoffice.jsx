@@ -380,9 +380,9 @@ export default function Backoffice() {
               <div className="grid gap-4">
                 {customOrders.map(order => (
                   <div key={order.Code} className="bg-white border border-[#4A7C96]/30 p-6 rounded-2xl shadow-sm flex flex-col md:flex-row gap-6">
-                    {order.image_data && (
+                    {(order.image_url || order.image_data) && (
                       <img
-                        src={`data:${order.img_type};base64,${order.image_data}`}
+                        src={order.image_url || `data:${order.img_type};base64,${order.image_data}`}
                         alt={order.Model}
                         className="w-full md:w-48 h-48 object-cover rounded-xl"
                       />

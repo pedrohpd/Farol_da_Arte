@@ -1,13 +1,16 @@
 package controllers
 
 import (
-	"io"
+	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"backend/internal/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/minio/minio-go/v7"
 	"gorm.io/gorm"
 )
 
@@ -30,18 +33,47 @@ func CreateCustomOrder(c *gin.Context) {
 		return
 	}
 
-	var imageData []byte
-	var imgType string
-
+	var imageURL string
 	file, header, err := c.Request.FormFile("image")
 	if err == nil {
 		defer file.Close()
-		imageData, err = io.ReadAll(file)
+
+		minioClient := c.MustGet("minio").(*minio.Client)
+		bucketName := os.Getenv("MINIO_BUCKET_NAME")
+
+		ext := ".jpg"
+		if len(header.Filename) > 0 {
+			contentType := header.Header.Get("Content-Type")
+			if contentType == "image/png" {
+				ext = ".png"
+			} else if contentType == "image/gif" {
+				ext = ".gif"
+			} else if contentType == "image/webp" {
+				ext = ".webp"
+			}
+		}
+		fileName := fmt.Sprintf("%s%s", uuid.New().String(), ext)
+
+		contentType := header.Header.Get("Content-Type")
+		if contentType == "" {
+			contentType = "application/octet-stream"
+		}
+
+		_, err = minioClient.PutObject(c.Request.Context(), bucketName, fileName, file, header.Size, minio.PutObjectOptions{
+			ContentType: contentType,
+		})
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Falha ao ler imagem"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Falha ao enviar imagem ao MinIO"})
 			return
 		}
-		imgType = header.Header.Get("Content-Type")
+
+		endpoint := os.Getenv("MINIO_ENDPOINT")
+		useSSLStr := os.Getenv("MINIO_USE_SSL")
+		schema := "http"
+		if useSSLStr == "true" {
+			schema = "https"
+		}
+		imageURL = fmt.Sprintf("%s://%s/%s/%s", schema, endpoint, bucketName, fileName)
 	} else if err != http.ErrMissingFile {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Erro ao ler arquivo enviado"})
 		return
@@ -52,8 +84,7 @@ func CreateCustomOrder(c *gin.Context) {
 		UserID:    userID,
 		Model:     model,
 		Details:   description,
-		ImgType:   imgType,
-		ImageData: imageData,
+		ImageURL:  imageURL,
 		Price:     0,
 	}
 

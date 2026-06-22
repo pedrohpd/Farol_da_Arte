@@ -34,9 +34,9 @@ export default function ProductDetails() {
     return <div className="text-center py-24">Produto não encontrado.</div>;
   }
 
-  const imageUrl = product.image_data
+  const imageUrl = product.image_url || (product.image_data
     ? `data:${product.img_type};base64,${product.image_data}`
-    : null;
+    : null);
 
   return (
     <div className="w-full px-6 md:px-12 lg:px-24 py-10 md:py-14 bg-[#F7E9D0]/30">

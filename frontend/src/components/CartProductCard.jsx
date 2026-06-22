@@ -16,9 +16,9 @@ export default function CartProductCard({ item, onRemove, onUpdateQuantity }) {
     onUpdateQuantity(itemCode, item.quantity + 1);
   };
 
-  const imageUrl = item.image_data
+  const imageUrl = item.image_url || (item.image_data
     ? `data:${item.img_type};base64,${item.image_data}`
-    : item.image; // fallback para itens mockados antigos se houver
+    : item.image); // fallback para itens mockados antigos se houver
 
   const formattedPrice = typeof item.price === 'number' 
     ? `R$ ${item.price.toFixed(2).replace('.', ',')}` 

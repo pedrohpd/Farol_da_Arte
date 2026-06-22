@@ -8,8 +8,7 @@ type CustomOrder struct {
 	UserID    uint      `gorm:"not null"`
 	Model     string    `gorm:"size:50;not null"`
 	Details   string    `gorm:"size:150;not null"`
-	ImgType   string    `json:"img_type"`
-	ImageData []byte    `gorm:"type:bytea" json:"image_data"`
+	ImageURL  string    `gorm:"type:text" json:"image_url"`
 	Price     float64   `gorm:"not null"`
 
 	User User `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`

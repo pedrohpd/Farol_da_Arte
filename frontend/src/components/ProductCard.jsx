@@ -20,9 +20,9 @@ export function ProductCard({ product, onAddToCart }) {
     onAddToCart(product, quantity);
     setQuantity(1); // reset after adding
   };
-  const imageUrl = product.image_data
+  const imageUrl = product.image_url || (product.image_data
     ? `data:${product.img_type};base64,${product.image_data}`
-    : null;
+    : null);
 
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#F7E9D0] hover:shadow-md hover:border-[#E8B864] transition-all group flex flex-col h-full">

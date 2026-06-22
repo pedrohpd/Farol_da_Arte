@@ -15,10 +15,10 @@ help:
 	@echo "  $(CYAN)make clean$(RESET)    - Remove os containers e limpa o node_modules"
 
 db:
-	docker compose up -d --build --force-recreate --remove-orphans
+	docker compose --env-file ./backend/.env up -d --build --force-recreate --remove-orphans
 
 stop-db:
-	docker compose down
+	docker compose --env-file ./backend/.env down
 
 backend:
 	cd backend && go run main.go

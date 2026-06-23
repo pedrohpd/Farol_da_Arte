@@ -5,12 +5,13 @@ import api from '../services/api';
 
 export default function ProductDetails() {
   const { id } = useParams();
-  const { addToCart } = useCart();
+  const { cart, addToCart } = useCart();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+
+  const isInCart = product && cart.some(item => (item.code || item.id) === (product.code || product.id));
 
   useEffect(() => {
     async function fetchProduct() {
@@ -62,32 +63,20 @@ export default function ProductDetails() {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center bg-gray-50 border border-gray-200 rounded-full h-14">
-              <button 
-                onClick={() => quantity > 1 && setQuantity(q => q - 1)}
-                className="w-12 h-full flex items-center justify-center text-[#423E37] font-bold hover:text-[#B15E4B] transition-colors"
-              >
-                -
-              </button>
-              <span className="w-10 text-center font-bold text-[#423E37]">
-                {quantity}
-              </span>
-              <button 
-                onClick={() => setQuantity(q => q + 1)}
-                className="w-12 h-full flex items-center justify-center text-[#423E37] font-bold hover:text-[#B15E4B] transition-colors"
-              >
-                +
-              </button>
-            </div>
-
             <button
               onClick={() => {
-                addToCart(product, quantity);
-                setQuantity(1);
+                if (!isInCart) {
+                  addToCart(product);
+                }
               }}
-              className="flex-grow bg-[#4A7C96] hover:bg-[#B15E4B] text-white font-bold py-4 px-8 rounded-full transition-all uppercase text-sm tracking-widest shadow-md text-center"
+              disabled={isInCart}
+              className={`w-full font-bold py-4 px-8 rounded-full transition-all uppercase text-sm tracking-widest shadow-md text-center ${
+                isInCart 
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
+                  : "bg-[#4A7C96] hover:bg-[#B15E4B] text-white"
+              }`}
             >
-              Adicionar à Sacola
+              {isInCart ? "Já na Sacola" : "Adicionar à Sacola"}
             </button>
           </div>
         </div>

@@ -1,4 +1,4 @@
-export default function CartProductCard({ item, onRemove, onUpdateQuantity }) {
+export default function CartProductCard({ item, onRemove }) {
   
   const itemCode = item.code || item.id;
 

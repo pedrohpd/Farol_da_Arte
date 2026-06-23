@@ -17,7 +17,7 @@ export default function Header() {
     return `${firstInitial}${lastInitial}`;
   };
 
-  const totalCartItems = cart.reduce((total, item) => total + item.quantity, 0);
+  const totalCartItems = cart.length;
 
   return (
     <header className="bg-[#4A7C96] border-b border-[#E8B864] sticky top-0 z-50" id="inicio">

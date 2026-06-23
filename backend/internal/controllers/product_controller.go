@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"backend/internal/models"
 
@@ -17,9 +18,24 @@ import (
 
 func GetProducts(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
+
+	// Avaliação preguiçosa: cancela pedidos expirados
+	db.Model(&models.Order{}).
+		Where("status = ? AND pix_expiration < ?", "pending_payment", time.Now()).
+		Update("status", "cancelled")
+
 	var products []models.Product
 
-	if err := db.Where("is_active = ?", true).Find(&products).Error; err != nil {
+	// Busca produtos ativos que não estejam em nenhum pedido ativo ou pago
+	query := `
+		is_active = ? AND code NOT IN (
+			SELECT oi.product_code 
+			FROM order_items oi 
+			JOIN orders o ON o.code = oi.order_id 
+			WHERE o.status IN ('pending_payment', 'paid')
+		)
+	`
+	if err := db.Where(query, true).Find(&products).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Falha ao buscar produtos"})
 		return
 	}
@@ -42,6 +58,11 @@ func GetAllProductsAdmin(c *gin.Context) {
 func GetProductByID(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	id := c.Param("id")
+
+	// Avaliação preguiçosa: cancela pedidos expirados
+	db.Model(&models.Order{}).
+		Where("status = ? AND pix_expiration < ?", "pending_payment", time.Now()).
+		Update("status", "cancelled")
 
 	var product models.Product
 	if err := db.First(&product, id).Error; err != nil {

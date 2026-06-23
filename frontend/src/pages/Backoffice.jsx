@@ -14,7 +14,7 @@ export default function Backoffice() {
   const [orders, setOrders] = useState([]);
   const [customOrders, setCustomOrders] = useState([]);
 
-  // Form states
+  // Estados do formulário
   const [editingId, setEditingId] = useState(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -24,7 +24,7 @@ export default function Backoffice() {
 
   const [loading, setLoading] = useState(false);
 
-  // Fetch data
+  // Buscar dados
   const fetchData = async () => {
     try {
       const [prodRes, ordRes, custOrdRes] = await Promise.all([
@@ -46,7 +46,7 @@ export default function Backoffice() {
     }
   }, [user]);
 
-  // Security check
+  // Verificação de segurança
   if (!user || !user.is_admin) {
     return (
       <div className="w-full px-6 py-24 flex-grow bg-[#F7E9D0]/30 min-h-screen text-center">
@@ -57,8 +57,9 @@ export default function Backoffice() {
   }
 
   // Calculated stats
-  const totalRevenue = orders.reduce((sum, order) => sum + (order.total_amount || 0), 0);
-  const totalOrders = orders.length + customOrders.length;
+  const activeOrders = orders.filter(order => order.status !== 'cancelled');
+  const totalRevenue = activeOrders.reduce((sum, order) => sum + (order.total_amount || 0), 0);
+  const totalOrders = activeOrders.length + customOrders.length;
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) setImageFile(e.target.files[0]);
@@ -124,7 +125,7 @@ export default function Backoffice() {
       }
 
       handleResetForm();
-      fetchData(); // Refresh product list
+      fetchData(); // Atualizar a lista de produtos
     } catch (error) {
       showPopup(error.response?.data?.error || 'Erro ao salvar produto.', 'error');
     } finally {
@@ -177,7 +178,7 @@ export default function Backoffice() {
           </button>
         </div>
 
-        {/* Tab Navigation */}
+        {/* Navegação por Abas */}
         <div className="flex flex-wrap gap-2 mb-8 border-b border-gray-200 pb-4">
           {[
             { id: 'dashboard', label: 'Dashboard' },
@@ -201,7 +202,7 @@ export default function Backoffice() {
           ))}
         </div>
 
-        {/* --- DASHBOARD TAB --- */}
+        {/* --- ABA DO DASHBOARD --- */}
         {activeTab === 'dashboard' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-[#F7E9D0]/30 p-8 rounded-3xl border border-[#F7E9D0]">
@@ -219,7 +220,7 @@ export default function Backoffice() {
           </div>
         )}
 
-        {/* --- ADD / EDIT PRODUCT TAB --- */}
+        {/* --- ABA DE ADICIONAR / EDITAR PRODUTO --- */}
         {activeTab === 'add' && (
           <div>
             <form onSubmit={handleSaveProduct} className="bg-gray-50 p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6 max-w-3xl">
@@ -270,7 +271,7 @@ export default function Backoffice() {
           </div>
         )}
 
-        {/* --- CATALOG TAB --- */}
+        {/* --- ABA DO CATÁLOGO --- */}
         {activeTab === 'catalog' && (
           <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
@@ -322,7 +323,7 @@ export default function Backoffice() {
           </div>
         )}
 
-        {/* --- ORDERS TAB --- */}
+        {/* --- ABA DE PEDIDOS --- */}
         {activeTab === 'orders' && (
           <div className="space-y-8">
             <h2 className="text-2xl font-bold text-[#4A7C96] uppercase tracking-tight">Pedidos Convencionais</h2>

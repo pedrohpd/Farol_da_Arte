@@ -13,19 +13,14 @@ export function CartProvider({ children }) {
     localStorage.setItem('@FarolDaArte:cartItems', JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (product, quantityToAdd = 1) => {
-    setCart((prevCart) => {
-      const productCode = product.code || product.id;
-      // Se o produto já está no carrinho, apenas aumentamos a quantidade
-      const existingProduct = prevCart.find(item => (item.code || item.id) === productCode);
-      if (existingProduct) {
-        return prevCart.map(item =>
-          (item.code || item.id) === productCode ? { ...item, quantity: item.quantity + quantityToAdd } : item
-        );
-      }
-      // Se for inédito, adicionamos na lista com a quantidade selecionada
-      return [...prevCart, { ...product, quantity: quantityToAdd }];
-    });
+  const addToCart = (product) => {
+    const productCode = product.code || product.id;
+    const existingProduct = cart.find(item => (item.code || item.id) === productCode);
+    if (existingProduct) {
+      alert("Este item já está no carrinho!");
+      return;
+    }
+    setCart((prevCart) => [...prevCart, { ...product, quantity: 1 }]);
   };
 
   const removeFromCart = (code) => {
@@ -34,16 +29,8 @@ export function CartProvider({ children }) {
 
   const clearCart = () => setCart([]);
 
-  const updateQuantity = (code, newQuantity) => {
-    setCart(prevCart =>
-      prevCart.map(item =>
-        (item.code || item.id) === code ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, updateQuantity }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );

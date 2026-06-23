@@ -1,14 +1,16 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CartIcon } from './Icons';
+import { useCart } from '../contexts/CartContext';
 
 export function ProductCard({ product, onAddToCart }) {
-  const [quantity, setQuantity] = useState(1);
+  const { cart } = useCart();
+  const isInCart = cart.some(item => (item.code || item.id) === (product.code || product.id));
 
   const handleAdd = (e) => {
     e.preventDefault();
-    onAddToCart(product, quantity);
-    setQuantity(1); // reset after adding
+    if (!isInCart) {
+      onAddToCart(product);
+    }
   };
   const imageUrl = product.image_url || (product.image_data
     ? `data:${product.img_type};base64,${product.image_data}`
@@ -38,10 +40,19 @@ export function ProductCard({ product, onAddToCart }) {
 
         <button
           onClick={handleAdd}
-          title="Adicionar ao carrinho"
-          className="bg-[#4A7C96] text-[#F7E9D0] p-2 rounded-xl hover:bg-[#B15E4B] transition-all flex items-center justify-center w-12 h-10 shadow-sm active:scale-95 group/btn"
+          disabled={isInCart}
+          title={isInCart ? "Item já no carrinho" : "Adicionar ao carrinho"}
+          className={`p-2 rounded-xl transition-all flex items-center justify-center w-12 h-10 shadow-sm ${
+            isInCart 
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
+              : "bg-[#4A7C96] text-[#F7E9D0] hover:bg-[#B15E4B] active:scale-95 group/btn"
+          }`}
         >
-          <CartIcon className="group-hover/btn:scale-110 transition-transform" />
+          {isInCart ? (
+            <span className="text-sm font-bold text-gray-500">✓</span>
+          ) : (
+            <CartIcon className="group-hover/btn:scale-110 transition-transform" />
+          )}
         </button>
       </div>
     </div>

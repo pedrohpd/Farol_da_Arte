@@ -6,14 +6,14 @@ import CartProductCard from '../components/CartProductCard';
 import { QRCodeSVG } from 'qrcode.react';
 
 export default function Cart() {
-  const { cart, removeFromCart, clearCart, updateQuantity } = useCart();
+  const { cart, removeFromCart, clearCart } = useCart();
   const { user } = useAuth();
 
   const [finished, setFinished] = useState(false);
   const [showAuthWarning, setShowAuthWarning] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
   
-  // 1. Novo estado para sabermos se o frete ainda está sendo calculado
+  // Novo estado para sabermos se o frete ainda está sendo calculado
   const [loadingShipping, setLoadingShipping] = useState(false);
 
   const [orderTotals, setOrderTotals] = useState({
@@ -36,7 +36,7 @@ export default function Cart() {
 
     const originCity = "São Carlos, SP";
     const destinationCity = user.city;
-    const pricePerKm = 0.40;
+    const pricePerKm = 0.2;
 
     try {
       const responseOrigin = await fetch(
@@ -87,7 +87,7 @@ export default function Cart() {
   const calculateOrderTotal = async () => {
     try {
       const itemsSubtotal = cart.reduce((sum, item) => {
-        return sum + (parsePrice(item.price) * item.quantity);
+        return sum + parsePrice(item.price);
       }, 0);
       
       const transferData = await calcTransferFee();
@@ -121,7 +121,7 @@ export default function Cart() {
     try {
       const itemsPayload = cart.map(item => ({
         product_code: item.code || item.id,
-        quantity: item.quantity
+        quantity: 1
       }));
 
       const { default: api } = await import('../services/api');
@@ -223,7 +223,6 @@ export default function Cart() {
                 key={item.code || item.id}
                 item={item}
                 onRemove={removeFromCart}
-                onUpdateQuantity={updateQuantity} 
               />
             ))}
           </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -6,13 +6,21 @@ import CartProductCard from '../components/CartProductCard';
 import { QRCodeSVG } from 'qrcode.react';
 
 export default function Cart() {
-  // 1. Adicione o "updateQuantity" vindo do useCart
   const { cart, removeFromCart, clearCart, updateQuantity } = useCart();
   const { user } = useAuth();
 
   const [finished, setFinished] = useState(false);
   const [showAuthWarning, setShowAuthWarning] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
+  
+  // 1. Novo estado para sabermos se o frete ainda está sendo calculado
+  const [loadingShipping, setLoadingShipping] = useState(false);
+
+  const [orderTotals, setOrderTotals] = useState({
+    itemsSubtotal: 0,
+    shippingFee: 0,
+    finalTotal: 0
+  });
 
   const parsePrice = (priceVal) => {
     if (typeof priceVal === 'number') return priceVal;
@@ -21,8 +29,88 @@ export default function Cart() {
     return parseFloat(cleanStr) || 0;
   };
 
-  const subtotal = cart.reduce((sum, item) => sum + (parsePrice(item.price) * item.quantity), 0);
-  const formattedSubtotal = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+  const calcTransferFee = async () => {
+    if (!user || !user.city) {
+      return { success: false, error: "Usuário não logado ou sem cidade definida." };
+    }
+
+    const originCity = "São Carlos, SP";
+    const destinationCity = user.city;
+    const pricePerKm = 0.40;
+
+    try {
+      const responseOrigin = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(originCity)}&format=json`,
+        { headers: { 'User-Agent': 'MeuAppFrete/1.0' } }
+      );
+      const dataOrigin = await responseOrigin.json();
+
+      const responseDest = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(destinationCity)}&format=json`,
+        { headers: { 'User-Agent': 'MeuAppFrete/1.0' } }
+      );
+      const dataDest = await responseDest.json();
+
+      if (dataOrigin.length === 0 || dataDest.length === 0) {
+        throw new Error('Não foi possível localizar a cidade de origem ou destino.');
+      }
+
+      const lat1 = dataOrigin[0].lat;
+      const lon1 = dataOrigin[0].lon;
+      const lat2 = dataDest[0].lat;
+      const lon2 = dataDest[0].lon;
+
+      const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=false`;
+      
+      const responseRoute = await fetch(osrmUrl);
+      const routeData = await responseRoute.json();
+
+      if (!routeData.routes || routeData.routes.length === 0) {
+        throw new Error('Não foi possível calcular a rota rodoviária entre as cidades.');
+      }
+
+      const distanceInMeters = routeData.routes[0].distance;
+      const distanceInKm = distanceInMeters / 1000;
+      const totalFee = distanceInKm * pricePerKm;
+
+      return {
+        success: true,
+        fee: Number(totalFee.toFixed(2))
+      };
+
+    } catch (error) {
+      console.error('Erro ao calcular frete:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  const calculateOrderTotal = async () => {
+    try {
+      const itemsSubtotal = cart.reduce((sum, item) => {
+        return sum + (parsePrice(item.price) * item.quantity);
+      }, 0);
+      
+      const transferData = await calcTransferFee();
+
+      if (transferData && transferData.success) {
+        const finalTotal = itemsSubtotal + transferData.fee;
+        return {
+          itemsSubtotal,
+          shippingFee: transferData.fee,
+          finalTotal
+        };
+      } else {
+        return {
+          itemsSubtotal,
+          shippingFee: 0,
+          finalTotal: itemsSubtotal
+        };
+      }
+
+    } catch (error) {
+      console.error("Erro ao calcular o total do pedido:", error);
+    }
+  };
 
   const handleCheckout = async () => {
     if (!user) {
@@ -36,7 +124,6 @@ export default function Cart() {
         quantity: item.quantity
       }));
 
-      // In a real scenario we use api.post
       const { default: api } = await import('../services/api');
       const response = await api.post('/orders', { items: itemsPayload });
 
@@ -49,6 +136,24 @@ export default function Cart() {
       alert("Houve um erro ao processar seu pedido. Tente novamente.");
     }
   };
+
+  useEffect(() => {
+    const updateTotals = async () => {
+      setLoadingShipping(true); // Ativa o loading antes da requisição
+      const totals = await calculateOrderTotal();
+      
+      if (totals) {
+        setOrderTotals({
+          itemsSubtotal: totals.itemsSubtotal,
+          shippingFee: totals.shippingFee,
+          finalTotal: totals.finalTotal
+        });
+      }
+      setLoadingShipping(false);
+    };
+
+    updateTotals();
+  }, [cart, user?.City]);
 
   if (finished && paymentData) {
     return (
@@ -118,7 +223,6 @@ export default function Cart() {
                 key={item.code || item.id}
                 item={item}
                 onRemove={removeFromCart}
-                // 2. Passe a função do contexto para o componente filho aqui:
                 onUpdateQuantity={updateQuantity} 
               />
             ))}
@@ -130,10 +234,29 @@ export default function Cart() {
                 Resumo da Compra
               </h3>
 
-              <div className="space-y-4 mb-8">
+              <div className="space-y-4 mb-8 text-sm text-[#423E37]">
+                <div className="flex justify-between">
+                  <span className="font-medium">Subtotal dos itens:</span>
+                  <span className="font-bold">R$ {orderTotals.itemsSubtotal.toFixed(2)}</span>
+                </div>
+                
+                <div className="flex justify-between">
+                  <span className="font-medium">Frete:</span>
+                  <span className="font-bold">
+                    {!user || !user.city 
+                      ? 'Faça login para calcular' 
+                      : loadingShipping 
+                        ? 'Calculando...' 
+                        : `R$ ${orderTotals.shippingFee.toFixed(2)}`
+                    }
+                  </span>
+                </div>
+                
                 <div className="pt-4 border-t border-gray-100 flex justify-between items-end">
-                  <span className="text-[#423E37] font-bold uppercase text-xs">Total</span>
-                  <span className="font-black text-3xl text-[#B15E4B] leading-none">{formattedSubtotal}</span>
+                  <span className="font-bold uppercase text-xs">Total Geral</span>
+                  <span className="font-black text-3xl text-[#B15E4B] leading-none">
+                    R$ {orderTotals.finalTotal.toFixed(2)}
+                  </span>
                 </div>
               </div>
 

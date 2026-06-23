@@ -5,16 +5,6 @@ import { CartIcon } from './Icons';
 export function ProductCard({ product, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
 
-  const handleDecrease = (e) => {
-    e.preventDefault();
-    if (quantity > 1) setQuantity(q => q - 1);
-  };
-
-  const handleIncrease = (e) => {
-    e.preventDefault();
-    setQuantity(q => q + 1);
-  };
-
   const handleAdd = (e) => {
     e.preventDefault();
     onAddToCart(product, quantity);
@@ -45,23 +35,6 @@ export function ProductCard({ product, onAddToCart }) {
       </Link>
 
       <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-100">
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={handleDecrease}
-            className="w-8 h-8 flex items-center justify-center bg-gray-50 text-[#423E37] border border-gray-200 rounded-lg font-bold transition-all hover:bg-[#B15E4B]/10 hover:text-[#B15E4B] hover:border-[#B15E4B]/30"
-          >
-            -
-          </button>
-          <span className="w-8 text-center text-sm font-bold text-[#423E37]">
-            {quantity}
-          </span>
-          <button 
-            onClick={handleIncrease}
-            className="w-8 h-8 flex items-center justify-center bg-gray-50 text-[#423E37] border border-gray-200 rounded-lg font-bold transition-all hover:bg-[#B15E4B]/10 hover:text-[#B15E4B] hover:border-[#B15E4B]/30"
-          >
-            +
-          </button>
-        </div>
 
         <button
           onClick={handleAdd}

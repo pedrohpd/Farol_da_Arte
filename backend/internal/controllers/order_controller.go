@@ -55,7 +55,7 @@ func CreateOrder(c *gin.Context) {
 		Status:        "pending_payment",
 		PaymentMethod: "pix",
 		PixQRCode:     "00020126580014br.gov.bcb.pix0136123e4567-e89b-12d3-a456-4266554400005204000053039865802BR5913Farol da Arte6009Sao Paulo62070503***63041A2B", // Mock estático
-		PixExpiration: time.Now().Add(30 * time.Minute),
+		PixExpiration: time.Now().Add(30 * time.Second),
 	}
 
 	if err := db.Create(&order).Error; err != nil {

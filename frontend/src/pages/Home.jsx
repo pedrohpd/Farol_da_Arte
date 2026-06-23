@@ -38,7 +38,7 @@ export default function Home() {
         </div>
         <div>
           <h1 className='text-[#B15E4B] font-extrabold'>Nossa história</h1>
-          <p className='whitespace-pre-line'>
+          <p className='whitespace-pre-line text-lg text-[#4A7C96] mb-8 leading-relaxed'>
           O Farol das Artes iniciou suas atividades em 2001, na feira de Barão, 
           que naquela época acontecia no bairro Guará em Campinas SP, 
           quinzenalmente aos domingos. Os produtos na época eram flores de meia de seda e imãs de geladeira. 

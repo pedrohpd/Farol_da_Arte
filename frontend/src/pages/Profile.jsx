@@ -218,59 +218,79 @@ export default function Profile() {
               <p className="text-gray-400 italic text-sm">Você ainda não tem pedidos.</p>
             ) : (
               <div className="space-y-6">
-                {orders.map(order => (
-                  <div key={order.code} className="border border-gray-100 rounded-2xl p-6 bg-gray-50/50">
-                    <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-4">
-                      <div>
-                        <span className="text-xs font-bold bg-[#4A7C96] text-white px-3 py-1 rounded-full mr-3 uppercase">#{order.code}</span>
-                        <span className="text-sm font-bold text-gray-500">{new Date(order.order_time).toLocaleString('pt-BR')}</span>
+                {orders.map(order => {
+                  const isExpired = order.status === 'pending_payment' && 
+                                    order.pix_expiration && 
+                                    new Date() > new Date(order.pix_expiration);
+
+                  return (
+                    <div key={order.code} className="border border-gray-100 rounded-2xl p-6 bg-gray-50/50">
+                      <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-4">
+                        <div>
+                          <span className="text-xs font-bold bg-[#4A7C96] text-white px-3 py-1 rounded-full mr-3 uppercase">#{order.code}</span>
+                          <span className="text-sm font-bold text-gray-500">{new Date(order.order_time).toLocaleString('pt-BR')}</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                            order.status === 'paid' ? 'bg-green-100 text-green-700' :
+                            order.status === 'cancelled' || isExpired ? 'bg-red-100 text-red-700' :
+                            'bg-yellow-100 text-yellow-700'
+                          }`}>
+                            {order.status === 'paid' ? 'Pago' : 
+                             order.status === 'cancelled' ? 'Cancelado' : 
+                             isExpired ? 'PIX Expirado' : 'Pendente Pix'}
+                          </span>
+                          <span className="font-black text-xl text-[#B15E4B]">
+                            {order.total_amount?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                          order.status === 'paid' ? 'bg-green-100 text-green-700' :
-                          order.status === 'cancelled' ? 'bg-red-100 text-red-700' :
-                          'bg-yellow-100 text-yellow-700'
-                        }`}>
-                          {order.status === 'paid' ? 'Pago' : order.status === 'cancelled' ? 'Cancelado' : 'Pendente Pix'}
-                        </span>
-                        <span className="font-black text-xl text-[#B15E4B]">
-                          {order.total_amount?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        </span>
-                      </div>
+
+                      <ul className="text-sm space-y-2 mb-4">
+                        {order.items?.map(item => (
+                          <li key={item.id} className="flex justify-between items-center text-gray-600">
+                            <span>{item.quantity}x {item.product?.name || `Produto #${item.product_code}`}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      {order.status === 'pending_payment' && order.pix_qrcode && !isExpired && (
+                        <div className="mt-4 bg-white border border-gray-200 p-6 rounded-xl flex flex-col md:flex-row gap-6 items-center">
+                          <div className="bg-white p-2 rounded-xl shadow-sm border border-gray-100 shrink-0">
+                            <QRCodeSVG value={order.pix_qrcode} size={120} level="M" />
+                          </div>
+                          <div className="flex-grow w-full">
+                            <p className="text-xs font-bold text-[#4A7C96] uppercase mb-1">Aguardando Pagamento via PIX</p>
+                            {order.pix_expiration && (
+                              <p className="text-[11px] text-gray-400 mb-2 font-medium">
+                                Vence em: {new Date(order.pix_expiration).toLocaleString('pt-BR')}
+                              </p>
+                            )}
+                            <code className="block w-full bg-gray-50 p-3 rounded-lg text-[10px] break-all border border-gray-100 text-gray-500 mb-3">
+                              {order.pix_qrcode}
+                            </code>
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(order.pix_qrcode);
+                                alert("Código PIX copiado!");
+                              }}
+                              className="w-full bg-[#B15E4B] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#4A7C96] transition-all text-xs uppercase"
+                            >
+                              Copiar PIX Copia e Cola
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {isExpired && (
+                        <div className="mt-4 bg-red-50/50 border border-red-200 p-4 rounded-xl text-center">
+                          <p className="text-xs font-bold text-red-700 uppercase">Tempo Limite Excedido</p>
+                          <p className="text-xs text-gray-500 mt-1">O código PIX para este pedido expirou. Caso ainda queira os itens, por favor, refaça a compra no carrinho.</p>
+                        </div>
+                      )}
                     </div>
-
-                    <ul className="text-sm space-y-2 mb-4">
-                      {order.items?.map(item => (
-                        <li key={item.id} className="flex justify-between items-center text-gray-600">
-                          <span>{item.quantity}x {item.product?.name || `Produto #${item.product_code}`}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {order.status !== 'paid' && order.status !== 'cancelled' && order.pix_qrcode && (
-                      <div className="mt-4 bg-white border border-gray-200 p-6 rounded-xl flex flex-col md:flex-row gap-6 items-center">
-                        <div className="bg-white p-2 rounded-xl shadow-sm border border-gray-100 shrink-0">
-                          <QRCodeSVG value={order.pix_qrcode} size={120} level="M" />
-                        </div>
-                        <div className="flex-grow w-full">
-                          <p className="text-xs font-bold text-[#4A7C96] uppercase mb-2">Aguardando Pagamento via PIX</p>
-                          <code className="block w-full bg-gray-50 p-3 rounded-lg text-[10px] break-all border border-gray-100 text-gray-500 mb-3">
-                            {order.pix_qrcode}
-                          </code>
-                          <button
-                            onClick={() => {
-                              navigator.clipboard.writeText(order.pix_qrcode);
-                              alert("Código PIX copiado!");
-                            }}
-                            className="w-full bg-[#B15E4B] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#4A7C96] transition-all text-xs uppercase"
-                          >
-                            Copiar PIX Copia e Cola
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

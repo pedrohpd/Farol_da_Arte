@@ -52,6 +52,30 @@ func ConnectMinIO() (*minio.Client, error) {
 		log.Printf("MinIO: Successfully created bucket %s\n", bucketName)
 	}
 
+	// Reseta toda a memória do MinIO (remove todos os objetos do bucket) se DROP_TABLE=true
+	if os.Getenv("DROP_TABLE") == "true" {
+		exists, errBucketExists := minioClient.BucketExists(ctx, bucketName)
+		if errBucketExists == nil && exists {
+			log.Printf("MinIO: DROP_TABLE=true detectado. Resetando bucket %s...\n", bucketName)
+			objectsCh := minioClient.ListObjects(ctx, bucketName, minio.ListObjectsOptions{
+				Recursive: true,
+			})
+			for object := range objectsCh {
+				if object.Err != nil {
+					log.Printf("MinIO: Erro ao listar objeto: %v\n", object.Err)
+					continue
+				}
+				err := minioClient.RemoveObject(ctx, bucketName, object.Key, minio.RemoveObjectOptions{})
+				if err != nil {
+					log.Printf("MinIO: Erro ao remover objeto %s: %v\n", object.Key, err)
+				} else {
+					log.Printf("MinIO: Objeto %s removido com sucesso\n", object.Key)
+				}
+			}
+			log.Println("MinIO: Reset concluído.")
+		}
+	}
+
 	// Seta política do bucket para público somente leitura
 	policy := fmt.Sprintf(`{
 		"Version": "2012-10-17",

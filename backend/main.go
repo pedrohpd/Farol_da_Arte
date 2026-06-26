@@ -21,7 +21,7 @@ func main() {
 		log.Fatalf("Failed to connect to database: %v", errDB)
 	}
 
-	if os.Getenv("APP") == "dev" {
+	if os.Getenv("DROP_TABLE") == "true" {
 		log.Println("WARNING: Dropping and recreating all tables...")
 		err := db.Migrator().DropTable(
 			&models.OrderItem{},

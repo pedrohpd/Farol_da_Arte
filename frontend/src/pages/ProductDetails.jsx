@@ -76,7 +76,7 @@ export default function ProductDetails() {
                   : "bg-[#4A7C96] hover:bg-[#B15E4B] text-white"
               }`}
             >
-              {isInCart ? "Já na Sacola" : "Adicionar à Sacola"}
+              {isInCart ? "Já no Carrinho" : "Adicionar ao Carrinho"}
             </button>
           </div>
         </div>
